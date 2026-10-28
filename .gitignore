@@ -1,0 +1,22 @@
+# Виртуальное окружение
+.venv/
+venv/
+
+# Кэш Python
+__pycache__/
+*.pyc
+
+# Настройки PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Кэш тестирования
+.pytest_cache/
+
+# Данные
+data/raw/
+
+# Локальные переменные окружения
+.env
