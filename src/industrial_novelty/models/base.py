@@ -33,6 +33,13 @@ class NoveltyDetector(ABC):
             raise ValueError("Оценки содержат NaN или бесконечность.")
         return scores
 
+    def score_batch(self, batch) -> np.ndarray:
+        """Оценка пачки. Наследник с памятью вдоль прогона переопределяет этот метод.
+
+        По умолчанию прогоны не связаны: каждое окно оценивается отдельно.
+        """
+        return self.score(batch.X)
+
     def fit_windows(self, X: np.ndarray) -> None:
         """Запомнить нормальные окна. По умолчанию у модели нет состояния."""
 

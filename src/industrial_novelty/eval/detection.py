@@ -112,6 +112,8 @@ def evaluate_model(
 
     Если ``threshold`` не задан, он выбирается по ``experiment.val``.
     Для этого при сборке эксперимента нужен ``val_fraction > 0``.
+    Оценки берутся через :meth:`NoveltyDetector.score_batch`, поэтому модель
+    с памятью вдоль прогона видит границы ``simulation_run``.
     """
     if threshold is None:
         if experiment.val is None:
@@ -119,8 +121,8 @@ def evaluate_model(
                 "Нет валидационных окон для выбора порога. "
                 "Задайте val_fraction > 0 или передайте threshold."
             )
-        threshold = threshold_at_fpr(model.score(experiment.val.X), target_fpr)
-    normal_scores = model.score(experiment.normal_test.X)
+        threshold = threshold_at_fpr(_score_batch(model, experiment.val), target_fpr)
+    normal_scores = _score_batch(model, experiment.normal_test)
     normal_fpr = (
         float(np.mean(normal_scores >= threshold))
         if len(normal_scores)
@@ -300,7 +302,14 @@ def _scoreable_scores(batch: WindowBatch, scores: np.ndarray) -> np.ndarray:
 def _score_batch(model: NoveltyDetector, batch: WindowBatch) -> np.ndarray:
     if len(batch) == 0:
         return np.empty(0, dtype=np.float64)
-    return model.score(batch.X)
+    scores = np.asarray(model.score_batch(batch), dtype=np.float64).reshape(-1)
+    if len(scores) != len(batch):
+        raise ValueError(
+            f"score_batch вернул {len(scores)} значений на {len(batch)} окон."
+        )
+    if not np.isfinite(scores).all():
+        raise ValueError("Оценки содержат NaN или бесконечность.")
+    return scores
 
 
 def _run_row(

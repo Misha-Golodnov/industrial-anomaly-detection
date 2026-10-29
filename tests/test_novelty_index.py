@@ -5,11 +5,15 @@ from __future__ import annotations
 import unittest
 
 import numpy as np
+import pandas as pd
 
+from industrial_novelty.data.windows import WindowBatch
 from industrial_novelty.models.base import NoveltyDetector
 from industrial_novelty.models.canonical import CanonicalVariateIndex
-from industrial_novelty.models.fusion import TailSum
+from industrial_novelty.models.chart import WithinRunEWMA, accumulate_runs
+from industrial_novelty.models.fusion import TailMax, TailSum
 from industrial_novelty.models.kernels import ConvolutionalKernelIndex, KernelBank
+from industrial_novelty.models.slow import SlowFeatureIndex
 from industrial_novelty.models.subspace import (
     WindowMomentIndex,
     WindowSubspaceIndex,
@@ -148,3 +152,59 @@ class TailSumTests(unittest.TestCase):
     def test_empty_member_list_is_rejected(self) -> None:
         with self.assertRaises(ValueError):
             TailSum(())
+
+    def test_max_keeps_the_member_that_is_at_its_own_tail(self) -> None:
+        windows = np.zeros((5, 4, 1), dtype=np.float32)
+        model = TailMax((ConstantScore(2.0), ConstantScore(5.0))).fit(windows)
+        np.testing.assert_allclose(model.score(windows), 1.0)
+
+
+class ChartTests(unittest.TestCase):
+    def test_ewma_resets_at_the_run_boundary(self) -> None:
+        scores = np.array([0.0, 0.0, 5.0, 0.0, 0.0])
+        runs = np.array([1, 1, 1, 2, 2])
+        ends = np.array([1, 2, 3, 1, 2])
+        smoothed = accumulate_runs(scores, runs, ends, lam=0.5, center=0.0, spread=1.0)
+        np.testing.assert_allclose(smoothed, [0.0, 0.0, 2.5, 0.0, 0.0])
+
+    def test_score_batch_does_not_carry_a_spike_into_the_next_run(self) -> None:
+        def batch(values: list[float], runs: list[int]) -> WindowBatch:
+            meta = pd.DataFrame(
+                {
+                    "fault_number": np.zeros(len(values), dtype=np.int32),
+                    "simulation_run": np.asarray(runs, dtype=np.int32),
+                    "sample_start": np.arange(1, len(values) + 1),
+                    "sample_end": np.arange(1, len(values) + 1),
+                    "label": np.zeros(len(values), dtype=np.int8),
+                    "post_shutdown": np.zeros(len(values), dtype=bool),
+                    "split": "train",
+                }
+            )
+            windows = np.asarray(values, dtype=np.float32).reshape(len(values), 1, 1)
+            return WindowBatch(windows, meta, ("xmeas_1",), "train")
+
+        class Identity(NoveltyDetector):
+            def anomaly_score(self, X: np.ndarray) -> np.ndarray:
+                return X.reshape(len(X), -1)[:, 0]
+
+        model = WithinRunEWMA(Identity(), lam=0.5).fit(
+            batch([0.0, 2.0, 0.0, 2.0], [1, 1, 2, 2]).X
+        )
+        scored = model.score_batch(batch([0.0, 10.0, 0.0], [1, 1, 2]))
+        continued = model.score(
+            np.array([0.0, 10.0, 0.0], dtype=np.float32).reshape(3, 1, 1)
+        )
+        self.assertLess(float(scored[2]), float(continued[2]))
+
+
+class SlowFeatureTests(unittest.TestCase):
+    def test_a_ramp_outranks_stationary_noise(self) -> None:
+        rng = np.random.default_rng(0)
+        noise = rng.normal(scale=0.2, size=(80, 20, 2)).astype(np.float32)
+        model = SlowFeatureIndex(n_slow=1).fit(noise)
+        stationary = rng.normal(scale=0.2, size=(20, 20, 2)).astype(np.float32)
+        ramp = stationary.copy()
+        ramp[:, :, 0] += np.linspace(-3.0, 3.0, 20, dtype=np.float32)
+        self.assertGreater(
+            float(model.score(ramp).mean()), float(model.score(stationary).mean())
+        )

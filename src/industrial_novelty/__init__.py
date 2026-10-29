@@ -15,9 +15,12 @@ from industrial_novelty.models import (
     CentroidDistance,
     ConvolutionalKernelIndex,
     NoveltyDetector,
+    SlowFeatureIndex,
+    TailMax,
     TailSum,
     WindowMomentIndex,
     WindowSubspaceIndex,
+    WithinRunEWMA,
 )
 
 __all__ = [
@@ -30,10 +33,13 @@ __all__ = [
     "ExperimentConfig",
     "FaultWindows",
     "NoveltyDetector",
+    "SlowFeatureIndex",
+    "TailMax",
     "TailSum",
     "WindowBatch",
     "WindowMomentIndex",
     "WindowSubspaceIndex",
+    "WithinRunEWMA",
     "build_experiment",
     "evaluate_model",
     "load_tep_file",
