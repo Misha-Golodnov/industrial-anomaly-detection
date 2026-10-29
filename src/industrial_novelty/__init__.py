@@ -10,17 +10,30 @@ from industrial_novelty.data import (
     load_tep_file,
 )
 from industrial_novelty.eval import DetectionReport, evaluate_model, threshold_at_fpr
-from industrial_novelty.models import CentroidDistance, NoveltyDetector
+from industrial_novelty.models import (
+    CanonicalVariateIndex,
+    CentroidDistance,
+    ConvolutionalKernelIndex,
+    NoveltyDetector,
+    TailSum,
+    WindowMomentIndex,
+    WindowSubspaceIndex,
+)
 
 __all__ = [
+    "CanonicalVariateIndex",
     "CentroidDistance",
     "ChannelScaler",
+    "ConvolutionalKernelIndex",
     "DetectionReport",
     "Experiment",
     "ExperimentConfig",
     "FaultWindows",
     "NoveltyDetector",
+    "TailSum",
     "WindowBatch",
+    "WindowMomentIndex",
+    "WindowSubspaceIndex",
     "build_experiment",
     "evaluate_model",
     "load_tep_file",
