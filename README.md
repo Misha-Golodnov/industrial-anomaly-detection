@@ -44,9 +44,46 @@ cd industrial-anomaly-detection
 poetry install
 ```
 
-После установки необходимо скачать датасет и разместить файлы `.RData` в директории `data/raw/`.
+После установки необходимо скачать датасет и разместить файлы `.RData` в директории `data/raw/`. Источник — [doi.org/10.7910/DVN/6C3JR1](https://doi.org/10.7910/DVN/6C3JR1). Нужны четыре файла: `TEP_FaultFree_Training.RData`, `TEP_FaultFree_Testing.RData`, `TEP_Faulty_Training.RData`, `TEP_Faulty_Testing.RData`.
 
 Разведочный анализ данных представлен в ноутбуке `notebooks/01_eda.ipynb`.
+
+Проверка кода:
+
+```bash
+python -m unittest discover -s tests
+```
+
+## Код эксперимента
+
+Пакет `industrial_novelty` готовит одни и те же окна для всех моделей. Модель видит массив формы `(число окон, длина окна, число каналов)` и возвращает одну оценку на окно: чем она больше, тем сильнее новизна.
+
+- Обучение — нормальные обучающие прогоны. Порог выбирается по отложенной части этих прогонов. Ложные срабатывания считаются на `TEP_FaultFree_Testing`.
+- Разрез только по `simulationRun`.
+- В неисправном тесте окно, пересекающее 160-й отсчёт, выбрасывается. Метка отказа стоит у окна, которое целиком начинается с 161-го отсчёта.
+- Окна после аварийного останова помечены в паспорте и не засчитываются как обнаружение отказа.
+- Отчёт добавляет долю нормальных прогонов с тревогой, устойчивость тревоги, долю ранних обнаружений, запас до останова и AUROC по каждой неисправности.
+- Масштаб каналов считается по обучающим отсчётам и затем применяется к остальным выборкам.
+
+Своя модель наследует `NoveltyDetector` и реализует `fit_windows` и `anomaly_score`. `CentroidDistance` ниже только проверяет, что связка считается до конца.
+
+```python
+from industrial_novelty import (
+    CentroidDistance,
+    ExperimentConfig,
+    build_experiment,
+    evaluate_model,
+)
+
+experiment = build_experiment(ExperimentConfig(window_size=50, stride=25))
+model = CentroidDistance().fit(experiment.train.X)
+report = evaluate_model(model, experiment, target_fpr=0.01)
+report.per_fault
+```
+
+Первый вызов `evaluate_model` читает `TEP_Faulty_Testing.RData` (около 800 МБ) и дальше обходит неисправности по одной. Для черновика задайте `max_runs`, чтобы взять несколько прогонов с наименьшими номерами в каждой части эксперимента.
+
+Рабочий пример — ноутбук `notebooks/02_baseline.ipynb`: модель из нескольких строк и общая оценка.
 
 ## Разведочный анализ данных (EDA)
 
@@ -73,4 +110,4 @@ poetry install
 - Pyreadr
 - Poetry
 - Ruff, pre-commit
-- pytest
+- unittest
