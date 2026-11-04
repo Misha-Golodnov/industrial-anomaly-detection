@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-04",
+  "tests_passed": 57,
+  "tests_failed": 0,
+  "completed_fits": 2240,
+  "artifact_counts": {
+    "timing.csv": 680,
+    "precision/timing.csv": 360,
+    "scaling/timing.csv": 240,
+    "supervised/per_seed.csv": 960,
+    "per_fault.csv": 38080,
+    "precision/per_fault.csv": 20160,
+    "scaling/per_fault.csv": 13440,
+    "supervised/per_class.csv": 7680
+  },
+  "score_archives": {
+    "scores": 680,
+    "precision\\scores": 360,
+    "scaling\\scores": 240
+  },
+  "all_manifest_code_hashes_match": true,
+  "local_links_resolve": true,
+  "figures": "two scientific PNGs visually inspected",
+  "status": "exploratory development, no independent SOTA confirmation"
+}

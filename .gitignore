@@ -17,6 +17,11 @@ __pycache__/
 
 # Данные
 data/raw/
+data/processed/lacuna_*/
+data/processed/ashrae_*/
+results/ashrae_directions_*/scores/
+results/ashrae_directions_*/precision/scores/
+results/ashrae_directions_*/scaling/scores/
 
 # Локальные переменные окружения
 .env

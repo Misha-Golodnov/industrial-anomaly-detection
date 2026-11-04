@@ -1,0 +1,3 @@
+# Optional CPU research runtime; installed alongside the Poetry environment.
+--index-url https://download.pytorch.org/whl/cpu
+torch==2.15.0+cpu

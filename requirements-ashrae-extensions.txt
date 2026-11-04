@@ -1,0 +1,3 @@
+-r requirements-ashrae.txt
+# Optional, separate thermodynamic equation-of-state ablation.
+CoolProp>=7,<9
