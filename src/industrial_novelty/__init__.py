@@ -9,16 +9,25 @@ from industrial_novelty.data import (
     build_experiment,
     load_tep_file,
 )
-from industrial_novelty.eval import DetectionReport, evaluate_model, threshold_at_fpr
+from industrial_novelty.eval import (
+    DetectionReport,
+    evaluate_model,
+    threshold_at_fpr,
+    threshold_at_run_risk,
+)
 from industrial_novelty.models import (
     CanonicalVariateIndex,
     CentroidDistance,
     ConvolutionalKernelIndex,
+    KernelMMDIndex,
+    NeuralTransformationIndex,
     NoveltyDetector,
     SlowFeatureIndex,
     TailMax,
     TailSum,
+    WindowDependenceIndex,
     WindowMomentIndex,
+    WindowSpectrumIndex,
     WindowSubspaceIndex,
     WithinRunEWMA,
 )
@@ -32,16 +41,21 @@ __all__ = [
     "Experiment",
     "ExperimentConfig",
     "FaultWindows",
+    "KernelMMDIndex",
+    "NeuralTransformationIndex",
     "NoveltyDetector",
     "SlowFeatureIndex",
     "TailMax",
     "TailSum",
     "WindowBatch",
+    "WindowDependenceIndex",
     "WindowMomentIndex",
+    "WindowSpectrumIndex",
     "WindowSubspaceIndex",
     "WithinRunEWMA",
     "build_experiment",
     "evaluate_model",
     "load_tep_file",
     "threshold_at_fpr",
+    "threshold_at_run_risk",
 ]

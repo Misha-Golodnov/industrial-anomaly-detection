@@ -88,7 +88,7 @@ class WithinRunEWMA(NoveltyDetector):
     def score_batch(self, batch) -> np.ndarray:
         if not hasattr(self, "center_"):
             raise RuntimeError("Сначала вызовите fit.")
-        raw = self.inner.score(batch.X)
+        raw = self.inner.score_batch(batch)
         meta = batch.meta
         return accumulate_runs(
             raw,

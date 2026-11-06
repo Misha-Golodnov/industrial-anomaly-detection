@@ -1,0 +1,9 @@
+method,truth,mean,size
+hist_gradient_boosting,coil_stuck,0.9636963696369637,303
+hist_gradient_boosting,damper_stuck,0.4158415841584158,303
+hist_gradient_boosting,normal,1.0,303
+hist_gradient_boosting,sa_bias,0.5742574257425742,606
+shrinkage_lda,coil_stuck,0.9141914191419142,303
+shrinkage_lda,damper_stuck,0.3102310231023102,303
+shrinkage_lda,normal,0.6336633663366337,303
+shrinkage_lda,sa_bias,0.3481848184818482,606

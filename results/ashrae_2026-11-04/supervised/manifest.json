@@ -1,0 +1,74 @@
+{
+  "track": "supervised eight-class diagnosis, separate from normal-only novelty",
+  "status": "exploratory; one normal trajectory; seed SD is not an independent-run CI",
+  "classes": [
+    "normal",
+    "cf",
+    "eo",
+    "fwc",
+    "fwe",
+    "nc",
+    "rl",
+    "ro"
+  ],
+  "methods": [
+    "logistic",
+    "rbf_svm",
+    "random_forest",
+    "extra_trees",
+    "hist_gradient_boosting",
+    "temporal_cnn"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "epochs": 30,
+  "scenarios": {
+    "seen_sl1": "train SL1 fit blocks; test SL1 held-out blocks",
+    "transfer_sl1": "train SL2-4 fit blocks; test SL1 held-out blocks; normal fit/test unchanged"
+  },
+  "protocols": [
+    "blocked",
+    "loto40",
+    "loto45",
+    "loto50"
+  ],
+  "channels": [
+    "TWE_set",
+    "TWCI",
+    "TEI",
+    "TEO",
+    "TWEI",
+    "TWEO",
+    "TCI",
+    "TCO",
+    "TWCO",
+    "kW",
+    "FWC",
+    "FWE",
+    "TRE",
+    "PRE",
+    "TRC",
+    "PRC",
+    "TRC_sub",
+    "T_suc",
+    "Tsh_suc",
+    "TR_dis",
+    "Tsh_dis",
+    "Amps",
+    "TO_sump",
+    "TO_feed",
+    "PO_feed",
+    "PO_net"
+  ],
+  "features": "mean+std; temporal CNN uses full windows; scalers fitted on supervised training only",
+  "tuning": "fixed hyperparameters; no test-based selection or oversampling",
+  "source_manifest": "../data_manifest.json",
+  "sklearn": "1.9.1",
+  "torch": "2.15.0+cpu",
+  "code_sha256": "d75f195c89ddd367f525360750c60e0fd6f5b3910ce57e6ee21ca2356f25cab3"
+}

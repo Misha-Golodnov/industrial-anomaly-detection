@@ -40,13 +40,20 @@ class _CalibratedTails(NoveltyDetector):
     def anomaly_score(self, X: np.ndarray) -> np.ndarray:
         if not hasattr(self, "scales_"):
             raise RuntimeError("Сначала вызовите fit.")
+        return self._combine([member.score(X) for member in self.members])
+
+    def score_batch(self, batch) -> np.ndarray:
+        if not hasattr(self, "scales_"):
+            raise RuntimeError("Сначала вызовите fit.")
+        return self._combine([member.score_batch(batch) for member in self.members])
+
+    def _combine(self, scores: Sequence[np.ndarray]) -> np.ndarray:
         parts = [
-            member.score(X) / scale
-            for member, scale in zip(self.members, self.scales_, strict=True)
+            values / scale for values, scale in zip(scores, self.scales_, strict=True)
         ]
         if self._reduce == "max":
             return np.maximum.reduce(parts)
-        total = np.zeros(len(X), dtype=np.float64)
+        total = np.zeros(len(parts[0]), dtype=np.float64)
         for part in parts:
             total += part
         return total

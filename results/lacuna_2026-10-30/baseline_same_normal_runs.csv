@@ -1,0 +1,4 @@
+protocol,n_normal_test_runs,false_alarm_run_rate,easy_detection,hard_detection,hard_median_delay_minutes
+window_1pct_960,300,0.30666666666666664,1.0,0.876,768.0
+run_5pct_960,300,0.04666666666666667,1.0,0.37600000000000006,1056.0
+run_10pct_960,300,0.13333333333333333,1.0,0.524,1152.0

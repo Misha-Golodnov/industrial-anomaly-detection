@@ -1,0 +1,4 @@
+split,n_windows,n_runs,window_size,n_channels
+train,24000,400,24,52
+val,6000,100,24,52
+normal_test,59000,500,24,52

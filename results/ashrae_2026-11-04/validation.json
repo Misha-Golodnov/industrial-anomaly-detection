@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-04",
+  "unit_tests": {"command": ".venv/Scripts/python.exe -m unittest discover -s tests", "passed": 50, "failed": 0},
+  "ruff_check": "passed for all eight new Python files",
+  "ruff_format_check": "passed for all eight new Python files",
+  "novelty_fits": 240,
+  "supervised_fits": 240,
+  "novelty_per_fault_metric_rows": 13440,
+  "supervised_per_class_rows": 1920,
+  "raw_file_sha256_verification": "32 of 32 matched data_manifest.json",
+  "experiment_code_sha256_verification": "all matched saved manifests",
+  "local_report_links": "all resolved",
+  "figures": "both PNG figures visually inspected",
+  "limitations": "Exploratory CSV derivative; no independent replicated normal trajectories; no confirmed SOTA; named full literature models are not claimed as reproduced."
+}

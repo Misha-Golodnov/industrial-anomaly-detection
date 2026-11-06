@@ -85,6 +85,35 @@ report.per_fault
 
 Рабочий пример — ноутбук `notebooks/02_baseline.ipynb`: модель из нескольких строк и общая оценка.
 
+## Проверка идей из Lacuna
+
+Скрипт `scripts/run_lacuna_experiments.py` проверяет калибровку тревог по целым
+прогонам, локальные зависимости датчиков, спектральные признаки, NeuTraL AD и
+ядерное сравнение недавней истории с нормальным эталоном. Новые ветви сравниваются
+отдельно и вместе с текущей моделью CVA + моменты + медленные признаки + EWMA.
+
+Для нейросетевой части нужна дополнительная CPU-зависимость:
+
+```powershell
+uv pip install --python .venv/Scripts/python.exe -r requirements-neural.txt
+.venv/Scripts/python.exe scripts/run_lacuna_experiments.py
+.venv/Scripts/python.exe scripts/summarize_lacuna_experiments.py
+```
+
+Быстрый сквозной запуск: добавьте `--max-runs 3 --epochs 2 --seeds 0 --output
+data/processed/lacuna_smoke`. Продолжить прерванный расчёт с теми же параметрами
+и локальными весами можно через `--resume`.
+
+Параметры и разбиения сохраняются до оценки отказов. Порог по прогонам проверяется
+при одинаковом горизонте калибровки и теста: отдельно 500 и 960 отсчётов.
+При горизонте 960 из нормального тестового файла выделены 200 прогонов для
+калибровки и 300 для проверки. Метки отказов в обучение и пороги не входят.
+
+Результаты: [отчёт](results/lacuna_2026-10-30/report.md),
+[все сравнения](results/lacuna_2026-10-30/summary.csv),
+[результаты по отказам](results/lacuna_2026-10-30/per_fault.csv).
+Источники и исходные гипотезы — в [исследовательской заметке](docs/research/lacuna_ideas_2026-10-30.md).
+
 ## Разведочный анализ данных (EDA)
 
 На текущем этапе выполнено:
@@ -111,3 +140,51 @@ report.per_fault
 - Poetry
 - Ruff, pre-commit
 - unittest
+
+## Исследование ASHRAE RP-1043
+
+На 4 ноября 2026 выполнены два отдельных пилота на авторской CSV-копии RP-1043:
+normal-only обнаружение (12 методов, 240 обучений) и supervised диагностика
+(6 методов, 240 обучений). Есть блоковые разбиения, перенос по температурной
+уставке и проверка SL2–SL4 → SL1. Это предварительные результаты; достижение
+SOTA не подтверждено. Копия имеет одну нормальную траекторию и округлённое время.
+
+- [Исследование, математика и протокол](docs/research/ashrae_rp1043_research_2026-11-04.md).
+- [Обзор литературы и статус воспроизведения](docs/research/ashrae_rp1043_literature_2026-11-04.md).
+- [Результаты normal-only](results/ashrae_2026-11-04/report.md).
+- [Результаты supervised](results/ashrae_2026-11-04/supervised/report.md).
+
+```powershell
+uv pip install --python .venv/Scripts/python.exe -r requirements-ashrae.txt
+uv pip install --python .venv/Scripts/python.exe -r requirements-neural.txt
+.venv/Scripts/python.exe scripts/prepare_ashrae_public.py
+.venv/Scripts/python.exe scripts/run_ashrae_benchmark.py
+.venv/Scripts/python.exe scripts/run_ashrae_supervised.py
+.venv/Scripts/python.exe scripts/summarize_ashrae_benchmark.py
+.venv/Scripts/python.exe scripts/summarize_ashrae_supervised.py
+```
+
+Продолжение: [перспективные направления и математика](docs/research/ashrae_promising_directions_2026-11-04.md),
+[результаты ещё 2240 обучений](results/ashrae_directions_2026-11-04/report.md).
+Проверены физические признаки, EOS R134a, спектральные признаки, GP,
+MEWMA/scan, covariance selection, physical-feature LDA и severity signatures.
+Есть отдельная проверка W12/W48 на одинаковых calibration/test endpoints.
+Для этого раунда дополнительно нужен `requirements-ashrae-extensions.txt`.
+
+## LBNL Fault Detection and Diagnostics
+
+На single-duct AHU сравнены 15 вариантов обнаружения с обучением на норме
+и проверена диагностика на отложенных уровнях тяжести. На двух полевых RTU
+проверен перенос структуры остаточной модели с повторным обучением.
+[Отчёт с математикой, обзором литературы и командами запуска](results/lbnl_sdahu_2026-11-07/report.md).
+
+[Перекрёстное сравнение TEP, RP-1043 и SDAHU](results/cross_dataset_transfer_2026-11-07/report.md)
+проверяет перенос трёх методов с переобучением на норме целевой установки
+и шесть вариантов их объединения.
+
+[Раннее обнаружение на TEP](results/tep_early_replay_2026-11-07/report.md)
+сравнивает непрерывный replay действующих моделей и тесты инноваций
+при одном номинальном бюджете ложных тревог на прогон.
+
+[Объединение динамики и инноваций на TEP](results/tep_fusion_2026-11-07/report.md)
+сравнивает три схемы калибровки общей тревоги и измеряет задержку по каждому отказу.
