@@ -1,0 +1,346 @@
+{
+  "dataset": "ashrae",
+  "protocol": "blocked",
+  "split": 0,
+  "window": 48,
+  "stride": 6,
+  "channels": [
+    "TWE_set",
+    "TWCI",
+    "TEI",
+    "TEO",
+    "TWEI",
+    "TWEO",
+    "TCI",
+    "TCO",
+    "TWCO",
+    "kW",
+    "FWC",
+    "FWE",
+    "TRE",
+    "PRE",
+    "TRC",
+    "PRC",
+    "TRC_sub",
+    "T_suc",
+    "Tsh_suc",
+    "TR_dis",
+    "Tsh_dis",
+    "Amps",
+    "TO_sump",
+    "TO_feed",
+    "PO_feed",
+    "PO_net"
+  ],
+  "normal_block_roles": {
+    "23": "reference",
+    "25": "reference",
+    "21": "calibration",
+    "26": "calibration",
+    "22": "test",
+    "24": "test",
+    "28": "fit",
+    "19": "fit",
+    "27": "fit",
+    "20": "fit",
+    "12": "reference",
+    "18": "calibration",
+    "13": "test",
+    "16": "fit",
+    "10": "fit",
+    "14": "fit",
+    "17": "fit",
+    "15": "fit",
+    "11": "fit",
+    "5": "reference",
+    "4": "reference",
+    "9": "calibration",
+    "0": "calibration",
+    "8": "test",
+    "2": "test",
+    "1": "fit",
+    "6": "fit",
+    "7": "fit",
+    "3": "fit"
+  },
+  "source": "Author CSV derivative of ASHRAE RP-1043",
+  "selected_shrinkage": {
+    "selected_parameter": 0.001,
+    "normal_reference_nll": -40.434725924044955,
+    "invalid_candidates": 0,
+    "trials": [
+      {
+        "parameter": 1e-05,
+        "status": "ok",
+        "normal_reference_nll": -16.111697309678995
+      },
+      {
+        "parameter": 0.0001,
+        "status": "ok",
+        "normal_reference_nll": -36.828601866616275
+      },
+      {
+        "parameter": 0.001,
+        "status": "ok",
+        "normal_reference_nll": -40.434725924044955
+      },
+      {
+        "parameter": 0.01,
+        "status": "ok",
+        "normal_reference_nll": -30.914211962490853
+      },
+      {
+        "parameter": 0.05,
+        "status": "ok",
+        "normal_reference_nll": -20.346197247000994
+      },
+      {
+        "parameter": 0.1,
+        "status": "ok",
+        "normal_reference_nll": -15.036827928586552
+      },
+      {
+        "parameter": 0.3,
+        "status": "ok",
+        "normal_reference_nll": -5.643391112425056
+      },
+      {
+        "parameter": 0.7,
+        "status": "ok",
+        "normal_reference_nll": 3.1945172476617127
+      },
+      {
+        "parameter": 1,
+        "status": "ok",
+        "normal_reference_nll": 13.881431106744774
+      }
+    ]
+  },
+  "virtual_graph": {
+    "TWE_set": [
+      "T_suc",
+      "TRE",
+      "PRE",
+      "TWEO",
+      "TEO",
+      "Tsh_suc"
+    ],
+    "TWCI": [
+      "TCI",
+      "TCO",
+      "TWCO",
+      "TRC",
+      "PRC",
+      "PO_feed"
+    ],
+    "TEI": [
+      "TWEI",
+      "TEO",
+      "TWEO",
+      "TWE_set",
+      "Tsh_suc",
+      "PRE"
+    ],
+    "TEO": [
+      "TWEO",
+      "T_suc",
+      "PRE",
+      "TRE",
+      "TWE_set",
+      "TWEI"
+    ],
+    "TWEI": [
+      "TEI",
+      "TEO",
+      "TWEO",
+      "TWE_set",
+      "Tsh_suc",
+      "PRE"
+    ],
+    "TWEO": [
+      "TEO",
+      "T_suc",
+      "TWE_set",
+      "PRE",
+      "TRE",
+      "TO_sump"
+    ],
+    "TCI": [
+      "TWCI",
+      "TCO",
+      "TWCO",
+      "TRC",
+      "PRC",
+      "PO_feed"
+    ],
+    "TCO": [
+      "TWCO",
+      "PRC",
+      "TRC",
+      "TWCI",
+      "TCI",
+      "PO_feed"
+    ],
+    "TWCO": [
+      "TCO",
+      "PRC",
+      "TRC",
+      "TWCI",
+      "TCI",
+      "PO_feed"
+    ],
+    "kW": [
+      "Amps",
+      "PO_net",
+      "TRC_sub",
+      "Tsh_dis",
+      "PRC",
+      "TRC"
+    ],
+    "FWC": [
+      "TEI",
+      "TWEI",
+      "TRC_sub",
+      "kW",
+      "Amps",
+      "Tsh_dis"
+    ],
+    "FWE": [
+      "TWEI",
+      "TEI",
+      "FWC",
+      "TRC_sub",
+      "TEO",
+      "kW"
+    ],
+    "TRE": [
+      "PRE",
+      "T_suc",
+      "TWE_set",
+      "TWEO",
+      "TEO",
+      "TO_sump"
+    ],
+    "PRE": [
+      "TRE",
+      "T_suc",
+      "TWE_set",
+      "TWEO",
+      "TEO",
+      "TO_sump"
+    ],
+    "TRC": [
+      "PRC",
+      "TWCO",
+      "TCO",
+      "PO_feed",
+      "TWCI",
+      "TCI"
+    ],
+    "PRC": [
+      "TRC",
+      "TWCO",
+      "TCO",
+      "PO_feed",
+      "TWCI",
+      "TCI"
+    ],
+    "TRC_sub": [
+      "kW",
+      "Amps",
+      "Tsh_dis",
+      "PO_net",
+      "TRC",
+      "PRC"
+    ],
+    "T_suc": [
+      "TRE",
+      "PRE",
+      "TWE_set",
+      "TWEO",
+      "TEO",
+      "Tsh_suc"
+    ],
+    "Tsh_suc": [
+      "TWE_set",
+      "T_suc",
+      "TWEO",
+      "TEO",
+      "TRE",
+      "PRE"
+    ],
+    "TR_dis": [
+      "TO_sump",
+      "TCI",
+      "TWCI",
+      "TO_feed",
+      "TRE",
+      "PRE"
+    ],
+    "Tsh_dis": [
+      "TRC_sub",
+      "kW",
+      "Amps",
+      "PO_net",
+      "TR_dis",
+      "T_suc"
+    ],
+    "Amps": [
+      "kW",
+      "PO_net",
+      "TRC_sub",
+      "Tsh_dis",
+      "PRC",
+      "TRC"
+    ],
+    "TO_sump": [
+      "TO_feed",
+      "PRE",
+      "TRE",
+      "TWEO",
+      "TEO",
+      "T_suc"
+    ],
+    "TO_feed": [
+      "TO_sump",
+      "PRE",
+      "TRE",
+      "TWEO",
+      "TEO",
+      "T_suc"
+    ],
+    "PO_feed": [
+      "TRC",
+      "PRC",
+      "TWCO",
+      "TCO",
+      "TCI",
+      "TWCI"
+    ],
+    "PO_net": [
+      "Amps",
+      "kW",
+      "PRC",
+      "TRC",
+      "TWCO",
+      "TCO"
+    ]
+  },
+  "fusion_scales": {
+    "tep_dynamic": [
+      80.87989599984576,
+      333.6336446029408
+    ],
+    "ashrae_precision": [
+      28.441677569039825,
+      83.35174290418884
+    ],
+    "lbnl_virtual": [
+      19.455714367893968,
+      619.3190537701962
+    ]
+  },
+  "numpy": "2.5.4",
+  "pandas": "3.1.0",
+  "sklearn": "1.9.1"
+}

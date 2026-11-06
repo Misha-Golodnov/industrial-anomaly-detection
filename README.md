@@ -170,3 +170,14 @@ uv pip install --python .venv/Scripts/python.exe -r requirements-neural.txt
 MEWMA/scan, covariance selection, physical-feature LDA и severity signatures.
 Есть отдельная проверка W12/W48 на одинаковых calibration/test endpoints.
 Для этого раунда дополнительно нужен `requirements-ashrae-extensions.txt`.
+
+## LBNL Fault Detection and Diagnostics
+
+На single-duct AHU сравнены 15 вариантов обнаружения с обучением на норме
+и проверена диагностика на отложенных уровнях тяжести. На двух полевых RTU
+проверен перенос структуры остаточной модели с повторным обучением.
+[Отчёт с математикой, обзором литературы и командами запуска](results/lbnl_sdahu_2026-11-07/report.md).
+
+[Перекрёстное сравнение TEP, RP-1043 и SDAHU](results/cross_dataset_transfer_2026-11-07/report.md)
+проверяет перенос трёх методов с переобучением на норме целевой установки
+и шесть вариантов их объединения.

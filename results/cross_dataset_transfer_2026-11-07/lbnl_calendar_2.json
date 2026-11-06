@@ -1,0 +1,325 @@
+{
+  "dataset": "lbnl",
+  "protocol": "calendar",
+  "split": 2,
+  "window": 4,
+  "stride": 1,
+  "interval_minutes": 15,
+  "channels": [
+    "CHWC_VLV_DM",
+    "MA_TEMP",
+    "OA_DMPR_DM",
+    "OA_TEMP",
+    "RA_DMPR_DM",
+    "RA_TEMP",
+    "RF_CS",
+    "SA_TEMP",
+    "SA_TEMPSPT",
+    "SF_CS",
+    "ZONE_TEMP_1",
+    "ZONE_TEMP_2",
+    "ZONE_TEMP_3",
+    "ZONE_TEMP_4",
+    "ZONE_TEMP_5"
+  ],
+  "week_origin": "2018-01-01",
+  "archive": "sdahu-figshare.zip",
+  "csv_inventory": [
+    {
+      "scenario": "AHU_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/AHU_annual.csv",
+      "canonical": "AHU_annual.csv",
+      "sha256_csv": "13a61e5b3e62dcf214b387dc57632073a8044c794eb8102d90d074aa80702d8b",
+      "crc32": "d56a30c7",
+      "family": "normal",
+      "filename_level": 0
+    },
+    {
+      "scenario": "coi_bias_-4_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_bias_-4_annual.csv",
+      "canonical": "coi_bias_-4_annual.csv",
+      "sha256_csv": "b0be39ed39e083bd1db8af62bee2d2559691d6fe35174f370950e0326893bda0",
+      "crc32": "e9225122",
+      "family": "sa_bias",
+      "filename_level": -4
+    },
+    {
+      "scenario": "coi_bias_-2_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_bias_-2_annual.csv",
+      "canonical": "coi_bias_-2_annual.csv",
+      "sha256_csv": "30c283998e3ae2193acf7d1b61400a7d34d74af8a3cca301d31da1435e0aee4d",
+      "crc32": "1e27420f",
+      "family": "sa_bias",
+      "filename_level": -2
+    },
+    {
+      "scenario": "coi_bias_2_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_bias_2_annual.csv",
+      "canonical": "coi_bias_2_annual.csv",
+      "sha256_csv": "78878e54e682a76622c2305f329481f3b5397a61b347f3a783f947a4b9b9d7a4",
+      "crc32": "febf6b0c",
+      "family": "sa_bias",
+      "filename_level": 2
+    },
+    {
+      "scenario": "coi_bias_4_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_bias_4_annual.csv",
+      "canonical": "coi_bias_4_annual.csv",
+      "sha256_csv": "905634f7dda255a1c5a0b78115dcfb54be458420becff58397ea607911c0bbae",
+      "crc32": "a022ba82",
+      "family": "sa_bias",
+      "filename_level": 4
+    },
+    {
+      "scenario": "oa_bias_-4_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/oa_bias_-4_annual.csv",
+      "canonical": "oa_bias_-4_annual.csv",
+      "sha256_csv": "07302cf907b48c495609c2db44c5e82cbb62290d1b4d9c05f8012fc00a5388e8",
+      "crc32": "d4980649",
+      "family": "oa_bias",
+      "filename_level": -4
+    },
+    {
+      "scenario": "oa_bias_-2_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/oa_bias_-2_annual.csv",
+      "canonical": "oa_bias_-4_annual.csv",
+      "sha256_csv": "07302cf907b48c495609c2db44c5e82cbb62290d1b4d9c05f8012fc00a5388e8",
+      "crc32": "d4980649",
+      "family": "oa_bias",
+      "filename_level": -2
+    },
+    {
+      "scenario": "oa_bias_2_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/oa_bias_2_annual.csv",
+      "canonical": "oa_bias_-4_annual.csv",
+      "sha256_csv": "07302cf907b48c495609c2db44c5e82cbb62290d1b4d9c05f8012fc00a5388e8",
+      "crc32": "d4980649",
+      "family": "oa_bias",
+      "filename_level": 2
+    },
+    {
+      "scenario": "oa_bias_4_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/oa_bias_4_annual.csv",
+      "canonical": "oa_bias_-4_annual.csv",
+      "sha256_csv": "07302cf907b48c495609c2db44c5e82cbb62290d1b4d9c05f8012fc00a5388e8",
+      "crc32": "d4980649",
+      "family": "oa_bias",
+      "filename_level": 4
+    },
+    {
+      "scenario": "coi_leakage_010_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_leakage_010_annual.csv",
+      "canonical": "coi_leakage_010_annual.csv",
+      "sha256_csv": "e520275f67027bbed69f84e6966bcef206ab0f7b2090d265934793e8d7af45ff",
+      "crc32": "516aa567",
+      "family": "coil_leak",
+      "filename_level": 10
+    },
+    {
+      "scenario": "coi_leakage_025_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_leakage_025_annual.csv",
+      "canonical": "coi_leakage_010_annual.csv",
+      "sha256_csv": "e520275f67027bbed69f84e6966bcef206ab0f7b2090d265934793e8d7af45ff",
+      "crc32": "516aa567",
+      "family": "coil_leak",
+      "filename_level": 25
+    },
+    {
+      "scenario": "coi_leakage_040_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_leakage_040_annual.csv",
+      "canonical": "coi_leakage_010_annual.csv",
+      "sha256_csv": "e520275f67027bbed69f84e6966bcef206ab0f7b2090d265934793e8d7af45ff",
+      "crc32": "516aa567",
+      "family": "coil_leak",
+      "filename_level": 40
+    },
+    {
+      "scenario": "coi_leakage_050_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_leakage_050_annual.csv",
+      "canonical": "coi_leakage_010_annual.csv",
+      "sha256_csv": "e520275f67027bbed69f84e6966bcef206ab0f7b2090d265934793e8d7af45ff",
+      "crc32": "516aa567",
+      "family": "coil_leak",
+      "filename_level": 50
+    },
+    {
+      "scenario": "coi_stuck_010_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_stuck_010_annual.csv",
+      "canonical": "coi_stuck_010_annual.csv",
+      "sha256_csv": "d8ec2faa84a0dfa5dfc4756bc848e877a110c3ccc70ba66e8a31db3fc632454a",
+      "crc32": "3ae2b02a",
+      "family": "coil_stuck",
+      "filename_level": 10
+    },
+    {
+      "scenario": "coi_stuck_025_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_stuck_025_annual.csv",
+      "canonical": "coi_stuck_025_annual.csv",
+      "sha256_csv": "e2e7eb27f1bc22f666e43c3ca31cea4000b9344c74046469dc530d7dcf500b21",
+      "crc32": "635bf309",
+      "family": "coil_stuck",
+      "filename_level": 25
+    },
+    {
+      "scenario": "coi_stuck_050_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_stuck_050_annual.csv",
+      "canonical": "coi_stuck_050_annual.csv",
+      "sha256_csv": "dc28965164cdb8aaa2f7e97945c6246fa6ad886d56a705ecdc08ff77dc2baf4e",
+      "crc32": "641fb055",
+      "family": "coil_stuck",
+      "filename_level": 50
+    },
+    {
+      "scenario": "coi_stuck_075_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/coi_stuck_075_annual.csv",
+      "canonical": "coi_stuck_075_annual.csv",
+      "sha256_csv": "5ac746c006efaf88e41e8a5e0fcff861cd0aee5dfa102fc5e4a560a54f584fe1",
+      "crc32": "4210433d",
+      "family": "coil_stuck",
+      "filename_level": 75
+    },
+    {
+      "scenario": "damper_stuck_010_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/damper_stuck_010_annual.csv",
+      "canonical": "damper_stuck_010_annual.csv",
+      "sha256_csv": "1ba1266850ee5f87cbac55e5df82ffb757dd2b155a4df7f934f07da5ef2cbf68",
+      "crc32": "aaec2938",
+      "family": "damper_stuck",
+      "filename_level": 10
+    },
+    {
+      "scenario": "damper_stuck_025_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/damper_stuck_025_annual.csv",
+      "canonical": "damper_stuck_025_annual.csv",
+      "sha256_csv": "a1f43d6091d34bc8edcf4dbf2fa686888c563bbdf6418d2afe3512b77e67544e",
+      "crc32": "cf411c91",
+      "family": "damper_stuck",
+      "filename_level": 25
+    },
+    {
+      "scenario": "damper_stuck_075_annual.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/damper_stuck_075_annual.csv",
+      "canonical": "damper_stuck_075_annual.csv",
+      "sha256_csv": "a79fa6f737305b55e39ffd8cf5d14bedb4f2cfbd72e425143e5af6bc4ad4e423",
+      "crc32": "e4be9a62",
+      "family": "damper_stuck",
+      "filename_level": 75
+    },
+    {
+      "scenario": "damper_stuck_100_annual_short.csv",
+      "member": "LBNL_FDD_Dataset_SDAHU/damper_stuck_100_annual_short.csv",
+      "canonical": "damper_stuck_100_annual_short.csv",
+      "sha256_csv": "2b2e3c6817c2a92dc99c41643497577939cb7d6b0d3bc287e297b611c04aa43d",
+      "crc32": "00c7a8b1",
+      "family": "damper_stuck",
+      "filename_level": 100
+    }
+  ],
+  "selected_shrinkage": {
+    "selected_parameter": 1e-05,
+    "normal_reference_nll": -18.83339589583632,
+    "invalid_candidates": 0,
+    "trials": [
+      {
+        "parameter": 1e-05,
+        "status": "ok",
+        "normal_reference_nll": -18.83339589583632
+      },
+      {
+        "parameter": 0.0001,
+        "status": "ok",
+        "normal_reference_nll": -17.030004294245966
+      },
+      {
+        "parameter": 0.001,
+        "status": "ok",
+        "normal_reference_nll": -14.791960720194327
+      },
+      {
+        "parameter": 0.01,
+        "status": "ok",
+        "normal_reference_nll": -12.16979450495902
+      },
+      {
+        "parameter": 0.05,
+        "status": "ok",
+        "normal_reference_nll": -9.547336286781388
+      },
+      {
+        "parameter": 0.1,
+        "status": "ok",
+        "normal_reference_nll": -8.179148367572626
+      },
+      {
+        "parameter": 0.3,
+        "status": "ok",
+        "normal_reference_nll": -5.572848912849817
+      },
+      {
+        "parameter": 0.7,
+        "status": "ok",
+        "normal_reference_nll": -2.6158991417651745
+      },
+      {
+        "parameter": 1,
+        "status": "ok",
+        "normal_reference_nll": 0.7703519075447538
+      }
+    ]
+  },
+  "virtual_graph": {
+    "OA_TEMP": [
+      "MA_TEMP",
+      "RA_TEMP",
+      "OA_DMPR_DM",
+      "SF_CS",
+      "ZONE_TEMP_1",
+      "ZONE_TEMP_2",
+      "ZONE_TEMP_3",
+      "ZONE_TEMP_4",
+      "ZONE_TEMP_5"
+    ],
+    "MA_TEMP": [
+      "OA_TEMP",
+      "RA_TEMP",
+      "OA_DMPR_DM",
+      "RA_DMPR_DM",
+      "SF_CS"
+    ],
+    "SA_TEMP": [
+      "MA_TEMP",
+      "OA_TEMP",
+      "CHWC_VLV_DM",
+      "SF_CS",
+      "SA_TEMPSPT"
+    ],
+    "CHWC_VLV_DM": [
+      "MA_TEMP",
+      "OA_TEMP",
+      "SA_TEMPSPT",
+      "SF_CS",
+      "ZONE_TEMP_1",
+      "ZONE_TEMP_2",
+      "ZONE_TEMP_3",
+      "ZONE_TEMP_4",
+      "ZONE_TEMP_5"
+    ]
+  },
+  "fusion_scales": {
+    "tep_dynamic": [
+      -0.06161932905479951,
+      2.7699254929528396
+    ],
+    "ashrae_precision": [
+      9.921510444164683,
+      55.71295494093491
+    ],
+    "lbnl_virtual": [
+      1.1260789499893162,
+      610.2258483749326
+    ]
+  },
+  "numpy": "2.5.4",
+  "pandas": "3.1.0",
+  "sklearn": "1.9.1"
+}
