@@ -1,0 +1,372 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_TEP_Operation" targetNamespace="https://github.com/Misha-Golodnov/industrial-anomaly-detection/bpmn/hw2" exporter="Codex documentation generator" exporterVersion="1.0">
+  <bpmn:error id="Error_Calculation" name="Ошибка расчёта" errorCode="inference_error"/>
+  <bpmn:collaboration id="Collaboration_TEP">
+    <bpmn:participant id="Participant_TEP" name="Мониторинг состояния установки" processRef="Process_TEP"/>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_TEP" name="Анализ нового прогона и обработка тревоги" isExecutable="false">
+    <bpmn:documentation>Проектируемая пакетная эксплуатация прототипа. Один экземпляр процесса на входной файл. Заранее утверждены обученная модель, скейлер, порядок каналов, точный порог и параметры EWMA. Текущая реализация в ноутбуке не содержит сервиса уведомлений и пользовательского интерфейса. Истинные метки отказа не используются при эксплуатации. Ошибку расчёта нельзя трактовать как норму.</bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_TEP">
+      <bpmn:lane id="Lane_Data" name="Модуль подготовки данных">
+        <bpmn:flowNodeRef>Start_File</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Validate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Data</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Prepare</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_DataError</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_DataError</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Model" name="Модуль детекции">
+        <bpmn:flowNodeRef>Task_Score</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Boundary_ScoreError</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Store</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Alarm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Notify</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ScoreError</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_ScoreError</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Normal</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Operator" name="Инженер / оператор">
+        <bpmn:flowNodeRef>Task_Review</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Confirm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Incident</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_FalseAlarm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Merge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Reviewed</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_File" name="Получен файл">
+      <bpmn:outgoing>Flow_01</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_Validate" name="Проверить каналы, отсчёты и качество данных">
+      <bpmn:incoming>Flow_01</bpmn:incoming>
+      <bpmn:outgoing>Flow_02</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_Data" name="Данные корректны и достаточны?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_02</bpmn:incoming>
+      <bpmn:outgoing>Flow_DataOK</bpmn:outgoing>
+      <bpmn:outgoing>Flow_DataBad</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_Prepare" name="Применить скейлер; сформировать окна 24 x 52, шаг 8">
+      <bpmn:incoming>Flow_DataOK</bpmn:incoming>
+      <bpmn:outgoing>Flow_Ready</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_DataError" name="Зарегистрировать проблему данных">
+      <bpmn:incoming>Flow_DataBad</bpmn:incoming>
+      <bpmn:outgoing>Flow_DataEnd</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_DataError" name="Данные отклонены">
+      <bpmn:incoming>Flow_DataEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_Score" name="Рассчитать скоры; сбросить EWMA между прогонами">
+      <bpmn:incoming>Flow_Ready</bpmn:incoming>
+      <bpmn:outgoing>Flow_Scored</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Boundary_ScoreError" name="Ошибка расчёта" attachedToRef="Task_Score" cancelActivity="true">
+      <bpmn:outgoing>Flow_Error</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorDefinition_Score" errorRef="Error_Calculation"/>
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="Task_Store" name="Сохранить оценки, порог и версию модели">
+      <bpmn:incoming>Flow_Scored</bpmn:incoming>
+      <bpmn:outgoing>Flow_Stored</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_Alarm" name="Есть превышение порога?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Stored</bpmn:incoming>
+      <bpmn:outgoing>Flow_Alarm</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Normal</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_Notify" name="Подготовить тревогу с подозрительными окнами">
+      <bpmn:incoming>Flow_Alarm</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToReview</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_ScoreError" name="Записать ошибку; уведомить инженера">
+      <bpmn:incoming>Flow_Error</bpmn:incoming>
+      <bpmn:outgoing>Flow_ErrorEnd</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_ScoreError" name="Расчёт не выполнен">
+      <bpmn:incoming>Flow_ErrorEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="End_Normal" name="Отчёт сохранён; тревог нет">
+      <bpmn:incoming>Flow_Normal</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Task_Review" name="Проверить тревожные окна и показания">
+      <bpmn:incoming>Flow_ToReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_Reviewed</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_Confirm" name="Проблема подтверждена?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_Reviewed</bpmn:incoming>
+      <bpmn:outgoing>Flow_Confirmed</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Rejected</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_Incident" name="Зарегистрировать инцидент; передать на обслуживание">
+      <bpmn:incoming>Flow_Confirmed</bpmn:incoming>
+      <bpmn:outgoing>Flow_IncidentDone</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_FalseAlarm" name="Зафиксировать ложную тревогу">
+      <bpmn:incoming>Flow_Rejected</bpmn:incoming>
+      <bpmn:outgoing>Flow_FalseDone</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_Merge" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_IncidentDone</bpmn:incoming>
+      <bpmn:incoming>Flow_FalseDone</bpmn:incoming>
+      <bpmn:outgoing>Flow_Complete</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="End_Reviewed" name="Проверка завершена">
+      <bpmn:incoming>Flow_Complete</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_01" sourceRef="Start_File" targetRef="Task_Validate"/>
+    <bpmn:sequenceFlow id="Flow_02" sourceRef="Task_Validate" targetRef="Gateway_Data"/>
+    <bpmn:sequenceFlow id="Flow_DataOK" sourceRef="Gateway_Data" targetRef="Task_Prepare" name="Да">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">data_valid</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_DataBad" sourceRef="Gateway_Data" targetRef="Task_DataError" name="Нет">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">not data_valid</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_DataEnd" sourceRef="Task_DataError" targetRef="End_DataError"/>
+    <bpmn:sequenceFlow id="Flow_Ready" sourceRef="Task_Prepare" targetRef="Task_Score"/>
+    <bpmn:sequenceFlow id="Flow_Scored" sourceRef="Task_Score" targetRef="Task_Store"/>
+    <bpmn:sequenceFlow id="Flow_Stored" sourceRef="Task_Store" targetRef="Gateway_Alarm"/>
+    <bpmn:sequenceFlow id="Flow_Alarm" sourceRef="Gateway_Alarm" targetRef="Task_Notify" name="Да">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">has_alarm</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Normal" sourceRef="Gateway_Alarm" targetRef="End_Normal" name="Нет">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">not has_alarm</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Error" sourceRef="Boundary_ScoreError" targetRef="Task_ScoreError"/>
+    <bpmn:sequenceFlow id="Flow_ErrorEnd" sourceRef="Task_ScoreError" targetRef="End_ScoreError"/>
+    <bpmn:sequenceFlow id="Flow_ToReview" sourceRef="Task_Notify" targetRef="Task_Review"/>
+    <bpmn:sequenceFlow id="Flow_Reviewed" sourceRef="Task_Review" targetRef="Gateway_Confirm"/>
+    <bpmn:sequenceFlow id="Flow_Confirmed" sourceRef="Gateway_Confirm" targetRef="Task_Incident" name="Да">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">incident_confirmed</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Rejected" sourceRef="Gateway_Confirm" targetRef="Task_FalseAlarm" name="Нет">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">not incident_confirmed</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_IncidentDone" sourceRef="Task_Incident" targetRef="Gateway_Merge"/>
+    <bpmn:sequenceFlow id="Flow_FalseDone" sourceRef="Task_FalseAlarm" targetRef="Gateway_Merge"/>
+    <bpmn:sequenceFlow id="Flow_Complete" sourceRef="Gateway_Merge" targetRef="End_Reviewed"/>
+    <bpmn:dataObject id="DataObject_Model" name="Утверждённый пакет модели"/>
+    <bpmn:dataObjectReference id="Data_Model" dataObjectRef="DataObject_Model" name="Утверждённый пакет модели: скейлер, детекторы, квантили, EWMA и точный порог"/>
+    <bpmn:association id="Assoc_Scaler" sourceRef="Data_Model" targetRef="Task_Prepare" associationDirection="One"/>
+    <bpmn:association id="Assoc_Model" sourceRef="Data_Model" targetRef="Task_Score" associationDirection="One"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_TEP">
+    <bpmndi:BPMNPlane id="Plane_TEP" bpmnElement="Collaboration_TEP">
+      <bpmndi:BPMNShape id="Participant_TEP_di" bpmnElement="Participant_TEP" isHorizontal="true">
+        <dc:Bounds x="45" y="145" width="1970" height="855"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Data_di" bpmnElement="Lane_Data" isHorizontal="true">
+        <dc:Bounds x="80" y="145" width="1935" height="255"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Model_di" bpmnElement="Lane_Model" isHorizontal="true">
+        <dc:Bounds x="80" y="400" width="1935" height="300"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Operator_di" bpmnElement="Lane_Operator" isHorizontal="true">
+        <dc:Bounds x="80" y="700" width="1935" height="300"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_File_di" bpmnElement="Start_File">
+        <dc:Bounds x="162" y="232" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="102" y="192" width="156" height="32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Validate_di" bpmnElement="Task_Validate">
+        <dc:Bounds x="245" y="205" width="180" height="90"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Data_di" bpmnElement="Gateway_Data" isMarkerVisible="true">
+        <dc:Bounds x="480" y="225" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="415" y="175" width="180" height="44"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Prepare_di" bpmnElement="Task_Prepare">
+        <dc:Bounds x="600" y="205" width="190" height="90"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_DataError_di" bpmnElement="Task_DataError">
+        <dc:Bounds x="245" y="310" width="180" height="70"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_DataError_di" bpmnElement="End_DataError">
+        <dc:Bounds x="162" y="327" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="102" y="367" width="156" height="32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Score_di" bpmnElement="Task_Score">
+        <dc:Bounds x="600" y="480" width="190" height="90"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Boundary_ScoreError_di" bpmnElement="Boundary_ScoreError">
+        <dc:Bounds x="677" y="552" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="720" y="591" width="150" height="22"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Store_di" bpmnElement="Task_Store">
+        <dc:Bounds x="835" y="480" width="190" height="90"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Alarm_di" bpmnElement="Gateway_Alarm" isMarkerVisible="true">
+        <dc:Bounds x="1080" y="500" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1015" y="450" width="180" height="44"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Notify_di" bpmnElement="Task_Notify">
+        <dc:Bounds x="1190" y="480" width="190" height="90"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ScoreError_di" bpmnElement="Task_ScoreError">
+        <dc:Bounds x="600" y="615" width="190" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_ScoreError_di" bpmnElement="End_ScoreError">
+        <dc:Bounds x="850" y="627" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="790" y="667" width="156" height="32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Normal_di" bpmnElement="End_Normal">
+        <dc:Bounds x="1087" y="627" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1027" y="667" width="156" height="32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Review_di" bpmnElement="Task_Review">
+        <dc:Bounds x="1190" y="775" width="190" height="90"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Confirm_di" bpmnElement="Gateway_Confirm" isMarkerVisible="true">
+        <dc:Bounds x="1450" y="795" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1360" y="710" width="230" height="45"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Incident_di" bpmnElement="Task_Incident">
+        <dc:Bounds x="1560" y="725" width="205" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_FalseAlarm_di" bpmnElement="Task_FalseAlarm">
+        <dc:Bounds x="1560" y="880" width="205" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Merge_di" bpmnElement="Gateway_Merge" isMarkerVisible="true">
+        <dc:Bounds x="1815" y="795" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Reviewed_di" bpmnElement="End_Reviewed">
+        <dc:Bounds x="1935" y="802" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1875" y="842" width="156" height="32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Data_Model_di" bpmnElement="Data_Model">
+        <dc:Bounds x="955" y="205" width="56" height="70"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1025" y="205" width="280" height="80"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_01_di" bpmnElement="Flow_01">
+        <di:waypoint x="198" y="250"/>
+        <di:waypoint x="245" y="250"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02_di" bpmnElement="Flow_02">
+        <di:waypoint x="425" y="250"/>
+        <di:waypoint x="480" y="250"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DataOK_di" bpmnElement="Flow_DataOK">
+        <di:waypoint x="530" y="250"/>
+        <di:waypoint x="600" y="250"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="537" y="221" width="40" height="24"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DataBad_di" bpmnElement="Flow_DataBad">
+        <di:waypoint x="505" y="275"/>
+        <di:waypoint x="505" y="345"/>
+        <di:waypoint x="425" y="345"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="457" y="296" width="40" height="24"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DataEnd_di" bpmnElement="Flow_DataEnd">
+        <di:waypoint x="245" y="345"/>
+        <di:waypoint x="198" y="345"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Ready_di" bpmnElement="Flow_Ready">
+        <di:waypoint x="695" y="295"/>
+        <di:waypoint x="695" y="480"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Scored_di" bpmnElement="Flow_Scored">
+        <di:waypoint x="790" y="525"/>
+        <di:waypoint x="835" y="525"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Stored_di" bpmnElement="Flow_Stored">
+        <di:waypoint x="1025" y="525"/>
+        <di:waypoint x="1080" y="525"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Alarm_di" bpmnElement="Flow_Alarm">
+        <di:waypoint x="1130" y="525"/>
+        <di:waypoint x="1190" y="525"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1140" y="494" width="40" height="24"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Normal_di" bpmnElement="Flow_Normal">
+        <di:waypoint x="1105" y="550"/>
+        <di:waypoint x="1105" y="627"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1112" y="575" width="40" height="24"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Error_di" bpmnElement="Flow_Error">
+        <di:waypoint x="695" y="588"/>
+        <di:waypoint x="695" y="615"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ErrorEnd_di" bpmnElement="Flow_ErrorEnd">
+        <di:waypoint x="790" y="645"/>
+        <di:waypoint x="850" y="645"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ToReview_di" bpmnElement="Flow_ToReview">
+        <di:waypoint x="1285" y="570"/>
+        <di:waypoint x="1285" y="775"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Reviewed_di" bpmnElement="Flow_Reviewed">
+        <di:waypoint x="1380" y="820"/>
+        <di:waypoint x="1450" y="820"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Confirmed_di" bpmnElement="Flow_Confirmed">
+        <di:waypoint x="1475" y="795"/>
+        <di:waypoint x="1475" y="765"/>
+        <di:waypoint x="1560" y="765"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1507" y="773" width="40" height="24"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Rejected_di" bpmnElement="Flow_Rejected">
+        <di:waypoint x="1475" y="845"/>
+        <di:waypoint x="1475" y="920"/>
+        <di:waypoint x="1560" y="920"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1490" y="890" width="40" height="24"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_IncidentDone_di" bpmnElement="Flow_IncidentDone">
+        <di:waypoint x="1765" y="765"/>
+        <di:waypoint x="1840" y="765"/>
+        <di:waypoint x="1840" y="795"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_FalseDone_di" bpmnElement="Flow_FalseDone">
+        <di:waypoint x="1765" y="920"/>
+        <di:waypoint x="1840" y="920"/>
+        <di:waypoint x="1840" y="845"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Complete_di" bpmnElement="Flow_Complete">
+        <di:waypoint x="1865" y="820"/>
+        <di:waypoint x="1935" y="820"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Assoc_Scaler_di" bpmnElement="Assoc_Scaler">
+        <di:waypoint x="955" y="240"/>
+        <di:waypoint x="860" y="240"/>
+        <di:waypoint x="860" y="250"/>
+        <di:waypoint x="790" y="250"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Assoc_Model_di" bpmnElement="Assoc_Model">
+        <di:waypoint x="983" y="275"/>
+        <di:waypoint x="983" y="430"/>
+        <di:waypoint x="760" y="430"/>
+        <di:waypoint x="760" y="480"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
