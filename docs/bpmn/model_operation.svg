@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2060" height="1160" viewBox="0 0 2060 1160">
+<rect x="0" y="0" width="2060" height="1160" rx="0" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.8"/>
+<rect x="0" y="0" width="2060" height="12" rx="0" fill="#157F81" stroke="#157F81" stroke-width="1.8"/>
+<text x="45" y="65" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#18384A" text-anchor="start">Эксплуатация детектора новизны</text>
+<text x="45" y="101" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#5B6D78" text-anchor="start">BPMN 2.0  |  один файл / партия данных  |  целевой процесс для исследовательского прототипа</text>
+<rect x="45" y="145" width="1970" height="855" rx="0" fill="#FFFFFF" stroke="#18384A" stroke-width="2"/>
+<text x="69" y="572.5" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#18384A" text-anchor="middle" transform="rotate(-90 69 572.5)">Мониторинг состояния установки</text>
+<rect x="80" y="145" width="1935" height="255" rx="0" fill="#F4F8FA" stroke="#BECED7" stroke-width="1.2"/>
+<polyline points="123,145 123,400" fill="none" stroke="#BECED7" stroke-width="1.2"/>
+<text x="108" y="272.5" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#18384A" text-anchor="middle" transform="rotate(-90 108 272.5)">Модуль подготовки данных</text>
+<rect x="80" y="400" width="1935" height="300" rx="0" fill="#F0F7F6" stroke="#BECED7" stroke-width="1.2"/>
+<polyline points="123,400 123,700" fill="none" stroke="#BECED7" stroke-width="1.2"/>
+<text x="108" y="550.0" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#18384A" text-anchor="middle" transform="rotate(-90 108 550.0)">Модуль детекции</text>
+<rect x="80" y="700" width="1935" height="300" rx="0" fill="#F7F7FB" stroke="#BECED7" stroke-width="1.2"/>
+<polyline points="123,700 123,1000" fill="none" stroke="#BECED7" stroke-width="1.2"/>
+<text x="108" y="850.0" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#18384A" text-anchor="middle" transform="rotate(-90 108 850.0)">Инженер / оператор</text>
+<polyline points="198,250 245,250" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="235.0,245.0 245,250 235.0,255.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="425,250 480,250" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="470.0,245.0 480,250 470.0,255.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="530,250 600,250" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="590.0,245.0 600,250 590.0,255.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<text x="555" y="238" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Да</text>
+<polyline points="505,275 505,345 425,345" fill="none" stroke="#B55A3A" stroke-width="2"/>
+<polygon points="435.0,350.0 425,345 435.0,340.0" fill="#B55A3A" stroke="#B55A3A" stroke-width="1"/>
+<text x="475" y="313" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Нет</text>
+<polyline points="245,345 198,345" fill="none" stroke="#B55A3A" stroke-width="2"/>
+<polygon points="208.0,350.0 198,345 208.0,340.0" fill="#B55A3A" stroke="#B55A3A" stroke-width="1"/>
+<polyline points="695,295 695,480" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="700.0,470.0 695,480 690.0,470.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="790,525 835,525" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="825.0,520.0 835,525 825.0,530.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="1025,525 1080,525" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1070.0,520.0 1080,525 1070.0,530.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="1130,525 1190,525" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1180.0,520.0 1190,525 1180.0,530.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<text x="1158" y="511" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Да</text>
+<polyline points="1105,550 1105,627" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1110.0,617.0 1105,627 1100.0,617.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<text x="1130" y="592" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Нет</text>
+<polyline points="695,588 695,615" fill="none" stroke="#B55A3A" stroke-width="2"/>
+<polygon points="700.0,605.0 695,615 690.0,605.0" fill="#B55A3A" stroke="#B55A3A" stroke-width="1"/>
+<polyline points="790,645 850,645" fill="none" stroke="#B55A3A" stroke-width="2"/>
+<polygon points="840.0,640.0 850,645 840.0,650.0" fill="#B55A3A" stroke="#B55A3A" stroke-width="1"/>
+<polyline points="1285,570 1285,775" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1290.0,765.0 1285,775 1280.0,765.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="1380,820 1450,820" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1440.0,815.0 1450,820 1440.0,825.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="1475,795 1475,765 1560,765" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1550.0,760.0 1560,765 1550.0,770.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<text x="1525" y="790" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Да</text>
+<polyline points="1475,845 1475,920 1560,920" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1550.0,915.0 1560,920 1550.0,925.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<text x="1508" y="907" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Нет</text>
+<polyline points="1765,765 1840,765 1840,795" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1845.0,785.0 1840,795 1835.0,785.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="1765,920 1840,920 1840,845" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1835.0,855.0 1840,845 1845.0,855.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="1865,820 1935,820" fill="none" stroke="#18384A" stroke-width="2"/>
+<polygon points="1925.0,815.0 1935,820 1925.0,825.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<polyline points="955,240 860,240 860,250 790,250" fill="none" stroke="#7893A0" stroke-width="1.4" stroke-dasharray="7 5"/>
+<polyline points="800.0,255.0 790,250 800.0,245.0" fill="none" stroke="#7893A0" stroke-width="1.4"/>
+<polyline points="983,275 983,430 760,430 760,480" fill="none" stroke="#7893A0" stroke-width="1.4" stroke-dasharray="7 5"/>
+<polyline points="765.0,470.0 760,480 755.0,470.0" fill="none" stroke="#7893A0" stroke-width="1.4"/>
+<circle cx="180.0" cy="250.0" r="18.0" fill="#FFFFFF" stroke="#18384A" stroke-width="2"/>
+<text x="180.0" y="217" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Получен файл</text>
+<rect x="245" y="205" width="180" height="90" rx="12" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="259" cy="216" r="4" fill="#FFFFFF" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="264.0,216.0 266.0,216.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="262.53553390593277,219.53553390593274 263.9497474683058,220.94974746830584" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="259.0,221.0 259.0,223.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="255.46446609406726,219.53553390593274 254.05025253169416,220.94974746830584" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="254.0,216.0 252.0,216.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="255.46446609406726,212.46446609406726 254.05025253169416,211.05025253169416" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="259.0,211.0 259.0,209.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="262.5355339059327,212.46446609406726 263.9497474683058,211.05025253169416" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<text x="335.0" y="239" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Проверить каналы,</text>
+<text x="335.0" y="259" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">отсчёты и</text>
+<text x="335.0" y="279" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">качество данных</text>
+<polygon points="505.0,225 530,250.0 505.0,275 480,250.0" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<polyline points="497.0,242.0 513.0,258.0" fill="none" stroke="#18384A" stroke-width="2.5"/>
+<polyline points="497.0,258.0 513.0,242.0" fill="none" stroke="#18384A" stroke-width="2.5"/>
+<text x="505.0" y="191" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Данные корректны</text>
+<text x="505.0" y="212" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">и достаточны?</text>
+<rect x="600" y="205" width="190" height="90" rx="12" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="614" cy="216" r="4" fill="#FFFFFF" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="619.0,216.0 621.0,216.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="617.5355339059328,219.53553390593274 618.9497474683059,220.94974746830584" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="614.0,221.0 614.0,223.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="610.4644660940672,219.53553390593274 609.0502525316941,220.94974746830584" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="609.0,216.0 607.0,216.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="610.4644660940672,212.46446609406726 609.0502525316941,211.05025253169416" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="614.0,211.0 614.0,209.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="617.5355339059328,212.46446609406726 618.9497474683059,211.05025253169416" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<text x="695.0" y="239" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Применить скейлер;</text>
+<text x="695.0" y="259" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">сформировать окна</text>
+<text x="695.0" y="279" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">24 x 52, шаг 8</text>
+<rect x="245" y="310" width="180" height="70" rx="12" fill="#FFF4EF" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="259" cy="321" r="4" fill="#FFFFFF" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="264.0,321.0 266.0,321.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="262.53553390593277,324.53553390593277 263.9497474683058,325.9497474683058" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="259.0,326.0 259.0,328.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="255.46446609406726,324.53553390593277 254.05025253169416,325.9497474683058" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="254.0,321.0 252.0,321.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="255.46446609406726,317.4644660940673 254.05025253169416,316.0502525316942" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="259.0,316.0 259.0,314.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="262.5355339059327,317.46446609406723 263.9497474683058,316.0502525316942" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<text x="335.0" y="344" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Зарегистрировать</text>
+<text x="335.0" y="364" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">проблему данных</text>
+<circle cx="180.0" cy="345.0" r="18.0" fill="#FFFFFF" stroke="#18384A" stroke-width="4"/>
+<text x="180.0" y="377" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#18384A" text-anchor="middle">Данные</text>
+<text x="180.0" y="396" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#18384A" text-anchor="middle">отклонены</text>
+<rect x="600" y="480" width="190" height="90" rx="12" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="614" cy="491" r="4" fill="#FFFFFF" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="619.0,491.0 621.0,491.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="617.5355339059328,494.53553390593277 618.9497474683059,495.9497474683058" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="614.0,496.0 614.0,498.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="610.4644660940672,494.53553390593277 609.0502525316941,495.9497474683058" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="609.0,491.0 607.0,491.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="610.4644660940672,487.4644660940673 609.0502525316941,486.0502525316942" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="614.0,486.0 614.0,484.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="617.5355339059328,487.46446609406723 618.9497474683059,486.0502525316942" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<text x="695.0" y="514" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Рассчитать скоры;</text>
+<text x="695.0" y="534" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">сбросить EWMA</text>
+<text x="695.0" y="554" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">между прогонами</text>
+<circle cx="695.0" cy="570.0" r="18.0" fill="#FFFFFF" stroke="#18384A" stroke-width="1.7"/>
+<circle cx="695.0" cy="570.0" r="14.0" fill="#FFFFFF" stroke="#18384A" stroke-width="1.2"/>
+<polygon points="697.0,560.0 689.0,572.0 695.0,570.0 693.0,580.0 701.0,568.0 695.0,570.0" fill="#18384A" stroke="#18384A" stroke-width="1"/>
+<text x="725" y="604.0" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#9C4A32" text-anchor="start">Ошибка расчёта</text>
+<rect x="835" y="480" width="190" height="90" rx="12" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="849" cy="491" r="4" fill="#FFFFFF" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="854.0,491.0 856.0,491.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="852.5355339059328,494.53553390593277 853.9497474683059,495.9497474683058" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="849.0,496.0 849.0,498.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="845.4644660940672,494.53553390593277 844.0502525316941,495.9497474683058" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="844.0,491.0 842.0,491.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="845.4644660940672,487.4644660940673 844.0502525316941,486.0502525316942" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="849.0,486.0 849.0,484.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="852.5355339059328,487.46446609406723 853.9497474683059,486.0502525316942" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<text x="930.0" y="514" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Сохранить оценки,</text>
+<text x="930.0" y="534" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">порог и версию</text>
+<text x="930.0" y="554" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">модели</text>
+<polygon points="1105.0,500 1130,525.0 1105.0,550 1080,525.0" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<polyline points="1097.0,517.0 1113.0,533.0" fill="none" stroke="#18384A" stroke-width="2.5"/>
+<polyline points="1097.0,533.0 1113.0,517.0" fill="none" stroke="#18384A" stroke-width="2.5"/>
+<text x="1105.0" y="466" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Есть превышение</text>
+<text x="1105.0" y="487" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">порога?</text>
+<rect x="1190" y="480" width="190" height="90" rx="12" fill="#FFF4D9" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="1204" cy="491" r="4" fill="#FFFFFF" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="1209.0,491.0 1211.0,491.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="1207.5355339059327,494.53553390593277 1208.9497474683058,495.9497474683058" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="1204.0,496.0 1204.0,498.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="1200.4644660940673,494.53553390593277 1199.0502525316942,495.9497474683058" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="1199.0,491.0 1197.0,491.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="1200.4644660940673,487.4644660940673 1199.0502525316942,486.0502525316942" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="1204.0,486.0 1204.0,484.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="1207.5355339059327,487.46446609406723 1208.9497474683058,486.0502525316942" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<text x="1285.0" y="514" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Подготовить тревогу</text>
+<text x="1285.0" y="534" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">с подозрительными</text>
+<text x="1285.0" y="554" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">окнами</text>
+<rect x="600" y="615" width="190" height="60" rx="12" fill="#FFF4EF" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="614" cy="626" r="4" fill="#FFFFFF" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="619.0,626.0 621.0,626.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="617.5355339059328,629.5355339059328 618.9497474683059,630.9497474683059" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="614.0,631.0 614.0,633.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="610.4644660940672,629.5355339059328 609.0502525316941,630.9497474683059" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="609.0,626.0 607.0,626.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="610.4644660940672,622.4644660940672 609.0502525316941,621.0502525316941" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="614.0,621.0 614.0,619.0" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<polyline points="617.5355339059328,622.4644660940672 618.9497474683059,621.0502525316941" fill="none" stroke="#5B6D78" stroke-width="1.3"/>
+<text x="695.0" y="649" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Записать ошибку;</text>
+<text x="695.0" y="669" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">уведомить инженера</text>
+<circle cx="868.0" cy="645.0" r="18.0" fill="#FFFFFF" stroke="#18384A" stroke-width="4"/>
+<text x="868.0" y="677" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#18384A" text-anchor="middle">Расчёт</text>
+<text x="868.0" y="696" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#18384A" text-anchor="middle">не выполнен</text>
+<circle cx="1105.0" cy="645.0" r="18.0" fill="#FFFFFF" stroke="#18384A" stroke-width="4"/>
+<text x="1105.0" y="677" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#18384A" text-anchor="middle">Отчёт сохранён;</text>
+<text x="1105.0" y="696" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#18384A" text-anchor="middle">тревог нет</text>
+<rect x="1190" y="775" width="190" height="90" rx="12" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="1204" cy="785" r="3" fill="#5B6D78" stroke="#5B6D78" stroke-width="1"/>
+<polyline points="1204,789 1204,795" fill="none" stroke="#5B6D78" stroke-width="1.5"/>
+<polyline points="1199,792 1209,792" fill="none" stroke="#5B6D78" stroke-width="1.5"/>
+<polyline points="1200,800 1204,795 1208,800" fill="none" stroke="#5B6D78" stroke-width="1.5"/>
+<text x="1285.0" y="817.0" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Проверить тревожные</text>
+<text x="1285.0" y="837.0" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">окна и показания</text>
+<polygon points="1475.0,795 1500,820.0 1475.0,845 1450,820.0" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<polyline points="1467.0,812.0 1483.0,828.0" fill="none" stroke="#18384A" stroke-width="2.5"/>
+<polyline points="1467.0,828.0 1483.0,812.0" fill="none" stroke="#18384A" stroke-width="2.5"/>
+<text x="1475.0" y="726" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">Проблема</text>
+<text x="1475.0" y="747" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#18384A" text-anchor="middle">подтверждена?</text>
+<rect x="1560" y="725" width="205" height="80" rx="12" fill="#FFF0EC" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="1574" cy="735" r="3" fill="#5B6D78" stroke="#5B6D78" stroke-width="1"/>
+<polyline points="1574,739 1574,745" fill="none" stroke="#5B6D78" stroke-width="1.5"/>
+<polyline points="1569,742 1579,742" fill="none" stroke="#5B6D78" stroke-width="1.5"/>
+<polyline points="1570,750 1574,745 1578,750" fill="none" stroke="#5B6D78" stroke-width="1.5"/>
+<text x="1662.5" y="759" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Зарегистрировать</text>
+<text x="1662.5" y="779" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">инцидент; передать</text>
+<text x="1662.5" y="799" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">на обслуживание</text>
+<rect x="1560" y="880" width="205" height="80" rx="12" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<circle cx="1574" cy="890" r="3" fill="#5B6D78" stroke="#5B6D78" stroke-width="1"/>
+<polyline points="1574,894 1574,900" fill="none" stroke="#5B6D78" stroke-width="1.5"/>
+<polyline points="1569,897 1579,897" fill="none" stroke="#5B6D78" stroke-width="1.5"/>
+<polyline points="1570,905 1574,900 1578,905" fill="none" stroke="#5B6D78" stroke-width="1.5"/>
+<text x="1662.5" y="917.0" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">Зафиксировать</text>
+<text x="1662.5" y="937.0" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18384A" text-anchor="middle">ложную тревогу</text>
+<polygon points="1840.0,795 1865,820.0 1840.0,845 1815,820.0" fill="#FFFFFF" stroke="#18384A" stroke-width="1.8"/>
+<polyline points="1832.0,812.0 1848.0,828.0" fill="none" stroke="#18384A" stroke-width="2.5"/>
+<polyline points="1832.0,828.0 1848.0,812.0" fill="none" stroke="#18384A" stroke-width="2.5"/>
+<circle cx="1953.0" cy="820.0" r="18.0" fill="#FFFFFF" stroke="#18384A" stroke-width="4"/>
+<text x="1953.0" y="852" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#18384A" text-anchor="middle">Проверка</text>
+<text x="1953.0" y="871" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#18384A" text-anchor="middle">завершена</text>
+<polygon points="955,205 998,205 1011,218 1011,275 955,275" fill="#FFFFFF" stroke="#7893A0" stroke-width="1.6"/>
+<polyline points="998,205 998,218 1011,218" fill="none" stroke="#7893A0" stroke-width="1.3"/>
+<text x="1031" y="222" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#5B6D78" text-anchor="start">Утверждённый пакет модели:</text>
+<text x="1031" y="243" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#5B6D78" text-anchor="start">скейлер, детекторы, квантили,</text>
+<text x="1031" y="264" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#5B6D78" text-anchor="start">EWMA и точный порог</text>
+<text x="1390" y="208" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#157F81" text-anchor="start">ПРЕДУСЛОВИЯ</text>
+<text x="1390" y="237" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#5B6D78" text-anchor="start">Модель, скейлер и порог утверждены.</text>
+<text x="1390" y="259" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#5B6D78" text-anchor="start">Обучение выполняется вне этого процесса.</text>
+<text x="1390" y="281" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#5B6D78" text-anchor="start">Метки отказов не нужны для расчёта скоров.</text>
+<text x="45" y="1045" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#5B6D78" text-anchor="start">Обозначения: круг - событие; прямоугольник - задача; ромб X - выбор одного пути; пунктир - связь с данными.</text>
+<text x="45" y="1076" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#5B6D78" text-anchor="start">Пограничное событие на расчёте прерывает обработку при ошибке. Ошибка и отсутствие тревоги - разные исходы.</text>
+<text x="45" y="1125" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#5B6D78" text-anchor="start">Версия процесса 1.0  |  08.11.2026  |  код 42f3a27  |  реальные уведомления и работа оператора пока не реализованы</text>
+</svg>
