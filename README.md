@@ -111,3 +111,12 @@ report.per_fault
 - Poetry
 - Ruff, pre-commit
 - unittest
+
+## Документация модели и процесса эксплуатации
+
+- [Model Card итоговой модели](docs/model card/MODEL_CARD.md) - назначение, обучение, метрики, сравнение семи вариантов и ограничения.
+- [BPMN-диаграмма эксплуатации](docs/bpmn/model_operation.svg) и [редактируемый исходник](docs/bpmn/model_operation.bpmn).
+- [Описание процесса](docs/bpmn/PROCESS_DESCRIPTION.md) - участники, сценарии и обработка исключений.
+- Версии для сдачи: [Model Card, PDF](docs/model card/MODEL_CARD.pdf), [BPMN, PDF](docs/bpmn/model_operation.pdf).
+
+Документация описывает исследовательский прототип и проектируемый процесс пакетной эксплуатации. Результаты взяты из сохранённого эксперимента; наличие готового промышленного сервиса не заявляется.
