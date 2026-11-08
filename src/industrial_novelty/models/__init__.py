@@ -6,6 +6,12 @@ from industrial_novelty.models.centroid import CentroidDistance
 from industrial_novelty.models.chart import WithinRunEWMA
 from industrial_novelty.models.fusion import TailMax, TailSum
 from industrial_novelty.models.kernels import ConvolutionalKernelIndex
+from industrial_novelty.models.neural import NeuralTransformationIndex
+from industrial_novelty.models.research import (
+    KernelMMDIndex,
+    WindowDependenceIndex,
+    WindowSpectrumIndex,
+)
 from industrial_novelty.models.slow import SlowFeatureIndex
 from industrial_novelty.models.subspace import WindowMomentIndex, WindowSubspaceIndex
 
@@ -13,11 +19,15 @@ __all__ = [
     "CanonicalVariateIndex",
     "CentroidDistance",
     "ConvolutionalKernelIndex",
+    "KernelMMDIndex",
+    "NeuralTransformationIndex",
     "NoveltyDetector",
     "SlowFeatureIndex",
     "TailMax",
     "TailSum",
+    "WindowDependenceIndex",
     "WindowMomentIndex",
+    "WindowSpectrumIndex",
     "WindowSubspaceIndex",
     "WithinRunEWMA",
 ]

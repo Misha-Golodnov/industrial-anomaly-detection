@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-04",
+  "status": "exploratory development; earlier test results were inspected",
+  "specifications": {
+    "raw_logistic": [
+      "raw_moments",
+      "logistic"
+    ],
+    "thermo_logistic": [
+      "thermo_moments",
+      "logistic"
+    ],
+    "thermo_eos_logistic": [
+      "thermo_eos",
+      "logistic"
+    ],
+    "raw_thermo_logistic": [
+      "raw_thermo_moments",
+      "logistic"
+    ],
+    "thermo_svm": [
+      "thermo_moments",
+      "svm"
+    ],
+    "raw_thermo_svm": [
+      "raw_thermo_moments",
+      "svm"
+    ],
+    "thermo_lda": [
+      "thermo_moments",
+      "lda"
+    ],
+    "raw_thermo_lda": [
+      "raw_thermo_moments",
+      "lda"
+    ],
+    "ray_invariant": [
+      "invariant",
+      "ray"
+    ],
+    "ray_thermo": [
+      "thermo",
+      "ray"
+    ],
+    "ray_conditional_thermo": [
+      "thermo",
+      "conditional_ray"
+    ],
+    "subspace_thermo": [
+      "thermo",
+      "subspace"
+    ]
+  },
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "windows": [
+    12,
+    48
+  ],
+  "protocols": [
+    "blocked",
+    "loto40",
+    "loto45",
+    "loto50"
+  ],
+  "scenarios": [
+    "seen_sl1",
+    "transfer_sl1"
+  ],
+  "selection": "fixed feature/head combinations; no per-test tuning",
+  "signature_gate": "normal reference covariance plus normal calibration, nominal 5% window risk",
+  "signature_warning": "positive-ray severity model is an approximation; two-dimensional subspace is sign-unrestricted",
+  "code_sha256": {
+    "D:\\industrial-anomaly-detection\\scripts\\run_ashrae_diagnosis_directions.py": "fa3221f51ba3dfde88d14f10ba904565dd790bd3b1ec74f50313fc1706dc3ce2",
+    "src\\industrial_novelty\\models\\chiller_diagnosis.py": "46a992233e2f02d3f517012d202494f7db5587af031cba6bdde7b2cc869ae13b",
+    "src\\industrial_novelty\\models\\chiller_directions.py": "d352c2ac0da1b83561dfcbab8ca041bb3a5fadfb490d3e251f7e96a2fee81cc7",
+    "src\\industrial_novelty\\data\\ashrae.py": "3086d4a4137410322ae4f5c4f1bd797dd84268762490542c2903769d593f464f"
+  }
+}

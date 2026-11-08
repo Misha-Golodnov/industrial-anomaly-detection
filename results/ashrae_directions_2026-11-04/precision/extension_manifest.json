@@ -1,0 +1,28 @@
+{
+  "stage": "adaptive follow-up after inspecting physical/spectral development results",
+  "selection": "covariance regularization selected by normal reference likelihood only",
+  "code_sha256": {
+    "D:\\industrial-anomaly-detection\\scripts\\run_ashrae_precision.py": "1f754dc26ea67b7f2fee3ff63b38c7e5720de511742f036c85802e82f8655efa",
+    "src\\industrial_novelty\\models\\chiller_precision.py": "ec9dc2408b8e8f55b911afb744621b86250f5252ede336e95df52633f7f16145",
+    "D:\\industrial-anomaly-detection\\scripts\\run_ashrae_directions.py": "3924bb5d76cdacc72149e07a082554431ffaaaf923f379301f40a2ca98a0bb3f"
+  },
+  "shrink_grid": [
+    1e-05,
+    0.0001,
+    0.001,
+    0.01,
+    0.05,
+    0.1,
+    0.3,
+    0.7,
+    1
+  ],
+  "graphical_grid": [
+    0.001,
+    0.01,
+    0.05,
+    0.1,
+    0.3,
+    1
+  ]
+}

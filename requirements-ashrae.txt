@@ -1,0 +1,5 @@
+# Optional research environment; does not change the existing TEP dependencies.
+scikit-learn>=1.6,<2
+scipy>=1.14,<2
+threadpoolctl>=3,<4
+# Neural experiments also need requirements-neural.txt.

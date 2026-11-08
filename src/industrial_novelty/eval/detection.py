@@ -190,23 +190,47 @@ def run_detections(
         and not np.isin(batch.meta["fault_number"].to_numpy(), [fault_number]).all()
     ):
         raise ValueError("В пачке окон есть чужой номер неисправности.")
-    scored = batch.with_scores(values) if len(batch) else batch.meta.copy()
-    rows = []
-    seen: set[int] = set()
-    if len(scored):
-        grouped = scored.groupby("simulation_run", sort=True)
-        for run, part in grouped:
-            rows.append(
-                _run_row(int(run), part, fault_number, threshold, last_normal_sample)
-            )
-            seen.add(int(run))
-    for run in simulation_runs:
-        if int(run) not in seen:
-            rows.append(_missing_run(fault_number, int(run)))
-    table = pd.DataFrame(rows, columns=list(RUN_COLUMNS))
-    table["first_detection_sample"] = table["first_detection_sample"].astype("Int64")
-    table["shutdown_start_sample"] = table["shutdown_start_sample"].astype("Int64")
-    return table.sort_values("simulation_run", kind="mergesort").reset_index(drop=True)
+    scored = batch.with_scores(values)
+    runs = sorted(
+        {int(run) for run in simulation_runs}
+        | {int(run) for run in scored["simulation_run"]}
+    )
+    index = pd.Index(runs, name="simulation_run")
+    eligible = scored.loc[
+        (scored["label"] == 1) & ~scored["post_shutdown"].astype(bool)
+    ]
+    hits = eligible.loc[eligible["score"] >= threshold]
+    count = eligible.groupby("simulation_run").size().reindex(index, fill_value=0)
+    hit_count = hits.groupby("simulation_run").size().reindex(index, fill_value=0)
+    first = hits.groupby("simulation_run")["sample_end"].min().reindex(index)
+    first_eligible = (
+        eligible.groupby("simulation_run")["sample_end"].min().reindex(index)
+    )
+    shutdown = scored.loc[scored["post_shutdown"].astype(bool)]
+    shutdown_start = (
+        shutdown.groupby("simulation_run")["sample_start"].min().reindex(index)
+    )
+    delay = first - last_normal_sample
+    table = pd.DataFrame(
+        {
+            "fault_number": fault_number,
+            "simulation_run": index,
+            "scoreable": (count > 0).to_numpy(),
+            "detected": (hit_count > 0).to_numpy(),
+            "early": first.eq(first_eligible).to_numpy(),
+            "alarm_persistence": (hit_count / count.replace(0, np.nan)).to_numpy(),
+            "delay_samples": delay.to_numpy(dtype=float),
+            "delay_minutes": (delay * SAMPLE_PERIOD_MINUTES).to_numpy(dtype=float),
+            "first_detection_sample": pd.array(first, dtype="Int64"),
+            "shutdown_start_sample": pd.array(shutdown_start, dtype="Int64"),
+            "shutdown_margin_minutes": (
+                (shutdown_start - first) * SAMPLE_PERIOD_MINUTES
+            ).to_numpy(dtype=float),
+            "n_scoreable_windows": count.to_numpy(),
+        },
+        columns=list(RUN_COLUMNS),
+    )
+    return table.reset_index(drop=True)
 
 
 def summarize_faults(per_run: pd.DataFrame) -> pd.DataFrame:
