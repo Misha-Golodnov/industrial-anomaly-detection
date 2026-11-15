@@ -1,0 +1,5 @@
+split,n_windows,n_blocks,window_size,n_channels,unique_source_rows
+fit,248,14,48,26,2118
+reference,91,5,48,26,756
+calibration,81,5,48,26,738
+test,91,5,48,26,756

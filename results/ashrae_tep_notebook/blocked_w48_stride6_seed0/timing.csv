@@ -1,0 +1,8 @@
+stage,seconds
+download_and_verify_seconds,0.21355340000081924
+normal_windows_and_split_seconds,0.0903201999990415
+scaling_seconds,0.011089800000263494
+model_fit_seconds,0.26563250000072003
+calibration_and_normal_test_seconds,0.029708100000789273
+fault_loading_windows_and_test_seconds,2.8160550000011426
+total_through_evaluation_and_plots_seconds,5.334524199999578

@@ -1,0 +1,2 @@
+model,protocol,seed,target_fpr,threshold,calibration_windows,normal_test_windows,normal_test_fpr,normal_block_alarm_rate
+CVA + Moments + Slow Features + TailMax + EWMA,blocked,0,0.15,909.6843652889941,81,91,0.0,0.0
