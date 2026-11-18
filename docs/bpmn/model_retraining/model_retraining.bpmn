@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_TEP_Retraining" targetNamespace="https://github.com/Misha-Golodnov/industrial-anomaly-detection/bpmn/retraining" exporter="docs generator" exporterVersion="1.0">
+  <bpmn:message id="Message_Request" name="Запрос на переобучение или смену модели"/>
+  <bpmn:error id="Error_Train" name="Сбой обучения" errorCode="training_error"/>
+  <bpmn:collaboration id="Collaboration_Retrain">
+    <bpmn:participant id="Participant_Retrain" name="Проектное переобучение и смена модели" processRef="Process_Retrain"/>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Retrain" name="Проектный процесс переобучения или смены модели" isExecutable="false">
+    <bpmn:documentation>Целевой процесс, не реализованный в текущем коде как автоматический цикл. Один экземпляр соответствует одному запуску переобучения. Текущая модель остаётся в эксплуатации до утверждения и проверки новой версии. Значения порогов триггеров, критериев приёмки и лимитов цикла являются условными проектными значениями, а не измеренными показателями системы.</bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_Retrain">
+      <bpmn:lane id="Lane_Monitor" name="Мониторинг">
+        <bpmn:flowNodeRef>Start_Timer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Start_Drift</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Start_Request</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Trigger</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Register</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Defer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Deferred</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_TrainStop</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_TrainStopped</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ML" name="ML-пайплайн">
+        <bpmn:flowNodeRef>Task_Collect</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Enough</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Split</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Loop</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Train</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Calibrate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Evaluate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Accept</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Compare</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Better</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Budget</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Adjust</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_KeepCurrent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_KeepCurrent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Boundary_TrainError</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Boundary_TrainTimeout</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Owner" name="ML-инженер">
+        <bpmn:flowNodeRef>Task_Approve</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Approved</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Reject</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Rejected</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Deploy" name="Деплой">
+        <bpmn:flowNodeRef>Task_Package</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Shadow</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Shadow</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Switch</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Docs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Deployed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Rollback</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_RolledBack</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_Timer" name="Квартальный пересмотр">
+      <bpmn:outgoing>Flow_T1</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerDef_Quarter"><bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P3M</bpmn:timeCycle></bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Start_Drift" name="Сработал порог триггера">
+      <bpmn:outgoing>Flow_T2</bpmn:outgoing>
+      <bpmn:conditionalEventDefinition id="CondDef_Drift"><bpmn:condition xsi:type="bpmn:tFormalExpression">false_alarm_share &gt; 0.40 OR any(abs(z) &gt; 4) OR new_runs &gt;= 100</bpmn:condition></bpmn:conditionalEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Start_Request" name="Запрос на смену модели">
+      <bpmn:outgoing>Flow_T3</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MsgDef_Request" messageRef="Message_Request"/>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_Trigger">
+      <bpmn:incoming>Flow_T1</bpmn:incoming>
+      <bpmn:incoming>Flow_T2</bpmn:incoming>
+      <bpmn:incoming>Flow_T3</bpmn:incoming>
+      <bpmn:outgoing>Flow_01</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_Register" name="Записать триггер и версию модели">
+      <bpmn:incoming>Flow_01</bpmn:incoming>
+      <bpmn:outgoing>Flow_02</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_Defer" name="Отложить; копить данные">
+      <bpmn:incoming>Flow_DataNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_04</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_Deferred" name="Переобучение отложено">
+      <bpmn:incoming>Flow_04</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_TrainStop" name="Записать причину; уведомить в Telegram">
+      <bpmn:incoming>Flow_TrainErr</bpmn:incoming>
+      <bpmn:incoming>Flow_TrainTime</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_TrainStopped" name="Обучение прервано; текущая модель в работе">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_Collect" name="Собрать доступные прогоны">
+      <bpmn:incoming>Flow_02</bpmn:incoming>
+      <bpmn:outgoing>Flow_03</bpmn:outgoing>
+      <bpmn:property id="Property_DA_Journal" name="__targetRef_placeholder"/>
+      <bpmn:dataInputAssociation id="DA_Journal"><bpmn:sourceRef>Data_Journal</bpmn:sourceRef><bpmn:targetRef>Property_DA_Journal</bpmn:targetRef></bpmn:dataInputAssociation>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_Enough" name="Данных достаточно?">
+      <bpmn:incoming>Flow_03</bpmn:incoming>
+      <bpmn:outgoing>Flow_DataNo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_DataYes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_Split" name="Разделить: train / val / holdout">
+      <bpmn:incoming>Flow_DataYes</bpmn:incoming>
+      <bpmn:outgoing>Flow_05</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_Loop">
+      <bpmn:incoming>Flow_05</bpmn:incoming>
+      <bpmn:incoming>Flow_Loop</bpmn:incoming>
+      <bpmn:outgoing>Flow_06</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_Train" name="Обучить модель-кандидат">
+      <bpmn:incoming>Flow_06</bpmn:incoming>
+      <bpmn:outgoing>Flow_07</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_Calibrate" name="Калибровать порог на val">
+      <bpmn:incoming>Flow_07</bpmn:incoming>
+      <bpmn:outgoing>Flow_08</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_Evaluate" name="Оценить кандидата на holdout">
+      <bpmn:incoming>Flow_08</bpmn:incoming>
+      <bpmn:outgoing>Flow_09</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_Accept" name="Критерии приёмки выполнены?">
+      <bpmn:incoming>Flow_09</bpmn:incoming>
+      <bpmn:outgoing>Flow_AcceptYes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_AcceptNo</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_Compare" name="Сравнить с текущей моделью">
+      <bpmn:incoming>Flow_AcceptYes</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_Better" name="Кандидат лучше текущей?">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_BetterNo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_BetterYes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_Budget" name="Лимит исчерпан?">
+      <bpmn:incoming>Flow_AcceptNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_BudgetNo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_BudgetYes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_Adjust" name="Следующая конфигурация">
+      <bpmn:incoming>Flow_BudgetNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_Loop</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_KeepCurrent" name="Оставить текущую модель">
+      <bpmn:incoming>Flow_BudgetYes</bpmn:incoming>
+      <bpmn:incoming>Flow_BetterNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_KeepCurrent" name="Текущая модель сохранена">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_Approve" name="Утвердить новую версию">
+      <bpmn:incoming>Flow_BetterYes</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_Approved" name="Утверждено?">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_ApprNo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ApprYes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_Reject" name="Записать отказ и причину">
+      <bpmn:incoming>Flow_ApprNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_Rejected" name="Кандидат отклонён">
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_Package" name="Сохранить версию пакета">
+      <bpmn:incoming>Flow_ApprYes</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DA_Package"><bpmn:targetRef>Data_Package</bpmn:targetRef></bpmn:dataOutputAssociation>
+    </bpmn:task>
+    <bpmn:task id="Task_Shadow" name="Теневой режим на новых файлах">
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_Shadow" name="Регрессии нет?">
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_ShadowYes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ShadowNo</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_Switch" name="Включить новую версию">
+      <bpmn:incoming>Flow_ShadowYes</bpmn:incoming>
+      <bpmn:outgoing>Flow_17</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DA_Registry"><bpmn:targetRef>Store_Registry</bpmn:targetRef></bpmn:dataOutputAssociation>
+    </bpmn:task>
+    <bpmn:task id="Task_Docs" name="Обновить model card и журнал">
+      <bpmn:incoming>Flow_17</bpmn:incoming>
+      <bpmn:outgoing>Flow_18</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_Deployed" name="Новая версия в эксплуатации">
+      <bpmn:incoming>Flow_18</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_Rollback" name="Откат к прежней версии">
+      <bpmn:incoming>Flow_ShadowNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_19</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_RolledBack" name="Кандидат не внедрён">
+      <bpmn:incoming>Flow_19</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Boundary_TrainError" name="Сбой обучения" attachedToRef="Task_Train" cancelActivity="true">
+      <bpmn:outgoing>Flow_TrainErr</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrDef_Train" errorRef="Error_Train"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Boundary_TrainTimeout" name="Лимит времени 8 ч" attachedToRef="Task_Train" cancelActivity="true">
+      <bpmn:outgoing>Flow_TrainTime</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerDef_Train"><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT8H</bpmn:timeDuration></bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_T1" sourceRef="Start_Timer" targetRef="Gateway_Trigger"/>
+    <bpmn:sequenceFlow id="Flow_T2" sourceRef="Start_Drift" targetRef="Gateway_Trigger"/>
+    <bpmn:sequenceFlow id="Flow_T3" sourceRef="Start_Request" targetRef="Gateway_Trigger"/>
+    <bpmn:sequenceFlow id="Flow_01" sourceRef="Gateway_Trigger" targetRef="Task_Register"/>
+    <bpmn:sequenceFlow id="Flow_02" sourceRef="Task_Register" targetRef="Task_Collect"/>
+    <bpmn:sequenceFlow id="Flow_03" sourceRef="Task_Collect" targetRef="Gateway_Enough"/>
+    <bpmn:sequenceFlow id="Flow_DataNo" name="Нет" sourceRef="Gateway_Enough" targetRef="Task_Defer">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">new_runs &lt; 100 OR data_quality_failed</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_04" sourceRef="Task_Defer" targetRef="End_Deferred"/>
+    <bpmn:sequenceFlow id="Flow_DataYes" name="Да" sourceRef="Gateway_Enough" targetRef="Task_Split">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">new_runs &gt;= 100 AND data_quality_ok</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_05" sourceRef="Task_Split" targetRef="Gateway_Loop"/>
+    <bpmn:sequenceFlow id="Flow_06" sourceRef="Gateway_Loop" targetRef="Task_Train"/>
+    <bpmn:sequenceFlow id="Flow_07" sourceRef="Task_Train" targetRef="Task_Calibrate"/>
+    <bpmn:sequenceFlow id="Flow_08" sourceRef="Task_Calibrate" targetRef="Task_Evaluate"/>
+    <bpmn:sequenceFlow id="Flow_09" sourceRef="Task_Evaluate" targetRef="Gateway_Accept"/>
+    <bpmn:sequenceFlow id="Flow_AcceptYes" name="Да" sourceRef="Gateway_Accept" targetRef="Task_Compare">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">all_acceptance_criteria_met</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_AcceptNo" name="Нет" sourceRef="Gateway_Accept" targetRef="Gateway_Budget">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">NOT all_acceptance_criteria_met</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_BudgetNo" name="Нет" sourceRef="Gateway_Budget" targetRef="Task_Adjust">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">iteration &lt; 5 AND no_improvement_streak &lt; 2</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Loop" sourceRef="Task_Adjust" targetRef="Gateway_Loop"/>
+    <bpmn:sequenceFlow id="Flow_BudgetYes" name="Да" sourceRef="Gateway_Budget" targetRef="Task_KeepCurrent">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">iteration &gt;= 5 OR no_improvement_streak &gt;= 2</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_BetterNo" name="Нет" sourceRef="Gateway_Better" targetRef="Task_KeepCurrent">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">NOT candidate_better_than_champion</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_KeepCurrent" targetRef="End_KeepCurrent"/>
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Task_Compare" targetRef="Gateway_Better"/>
+    <bpmn:sequenceFlow id="Flow_BetterYes" name="Да" sourceRef="Gateway_Better" targetRef="Task_Approve">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">candidate_better_than_champion</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_TrainErr" sourceRef="Boundary_TrainError" targetRef="Task_TrainStop"/>
+    <bpmn:sequenceFlow id="Flow_TrainTime" sourceRef="Boundary_TrainTimeout" targetRef="Task_TrainStop"/>
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_TrainStop" targetRef="End_TrainStopped"/>
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Task_Approve" targetRef="Gateway_Approved"/>
+    <bpmn:sequenceFlow id="Flow_ApprNo" name="Нет" sourceRef="Gateway_Approved" targetRef="Task_Reject">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">approved == false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Task_Reject" targetRef="End_Rejected"/>
+    <bpmn:sequenceFlow id="Flow_ApprYes" name="Да" sourceRef="Gateway_Approved" targetRef="Task_Package">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">approved == true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="Task_Package" targetRef="Task_Shadow"/>
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="Task_Shadow" targetRef="Gateway_Shadow"/>
+    <bpmn:sequenceFlow id="Flow_ShadowYes" name="Да" sourceRef="Gateway_Shadow" targetRef="Task_Switch">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">shadow_no_regression</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_ShadowNo" name="Нет" sourceRef="Gateway_Shadow" targetRef="Task_Rollback">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">NOT shadow_no_regression</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_17" sourceRef="Task_Switch" targetRef="Task_Docs"/>
+    <bpmn:sequenceFlow id="Flow_18" sourceRef="Task_Docs" targetRef="End_Deployed"/>
+    <bpmn:sequenceFlow id="Flow_19" sourceRef="Task_Rollback" targetRef="End_RolledBack"/>
+    <bpmn:dataObject id="DataObject_Journal" name="Журнал тревог и решений инженера"/>
+    <bpmn:dataObject id="DataObject_Package" name="Пакет модели-кандидата"/>
+    <bpmn:dataObjectReference id="Data_Journal" dataObjectRef="DataObject_Journal" name="Журнал тревог и решений инженера"/>
+    <bpmn:dataObjectReference id="Data_Package" dataObjectRef="DataObject_Package" name="Пакет модели-кандидата"/>
+    <bpmn:dataStoreReference id="Store_Registry" dataStoreRef="DataStore_Registry" name="Реестр версий модели"/>
+    <bpmn:textAnnotation id="Annot_Triggers"><bpmn:text>Условные проектные пороги триггеров: плановый пересмотр — раз в квартал; доля ложных тревог &gt; 40%; |z| &gt; 4; накоплено 100 прогонов; также возможен запрос на смену модели.</bpmn:text></bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annot_Accept"><bpmn:text>Условные проектные критерии приёмки на holdout: доля ложных тревог по окнам ≤ 1,5%; нормальных прогонов с тревогой ≤ 30%; обнаружение неисправностей ≥ 98%; AUROC ≥ 0,80.</bpmn:text></bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annot_Stop"><bpmn:text>Условные проектные лимиты цикла: не более 5 конфигураций; остановка после 2 итераций без улучшения; лимит обучения — 8 часов. Сбой обучения также завершает запуск.</bpmn:text></bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Annot_Shadow"><bpmn:text>Теневой режим, его параметры, реестр версий модели, роль владельца модели и автоматический цикл переобучения — проектные элементы, которых нет в текущем коде.</bpmn:text></bpmn:textAnnotation>
+    <bpmn:association id="Assoc_Triggers" sourceRef="Annot_Triggers" targetRef="Task_Register"/>
+    <bpmn:association id="Assoc_Accept" sourceRef="Annot_Accept" targetRef="Gateway_Accept"/>
+    <bpmn:association id="Assoc_Stop" sourceRef="Annot_Stop" targetRef="Gateway_Budget"/>
+    <bpmn:association id="Assoc_Shadow" sourceRef="Annot_Shadow" targetRef="Task_Shadow"/>
+  </bpmn:process>
+  <bpmn:dataStore id="DataStore_Registry" name="Реестр версий модели (проект; нет в коде)"/>
+  <bpmndi:BPMNDiagram id="Diagram_Retrain">
+    <bpmndi:BPMNPlane id="Plane_Retrain" bpmnElement="Collaboration_Retrain">
+      <bpmndi:BPMNShape id="Participant_Retrain_di" bpmnElement="Participant_Retrain" isHorizontal="true"><dc:Bounds x="160" y="60" width="2930" height="1320"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Monitor_di" bpmnElement="Lane_Monitor" isHorizontal="true"><dc:Bounds x="190" y="60" width="2900" height="310"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_ML_di" bpmnElement="Lane_ML" isHorizontal="true"><dc:Bounds x="190" y="370" width="2900" height="490"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Owner_di" bpmnElement="Lane_Owner" isHorizontal="true"><dc:Bounds x="190" y="860" width="2900" height="200"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Deploy_di" bpmnElement="Lane_Deploy" isHorizontal="true"><dc:Bounds x="190" y="1060" width="2900" height="320"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_Timer_di" bpmnElement="Start_Timer"><dc:Bounds x="262" y="92" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="230" y="132" width="100" height="27"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_Drift_di" bpmnElement="Start_Drift"><dc:Bounds x="262" y="192" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="225" y="232" width="110" height="27"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_Request_di" bpmnElement="Start_Request"><dc:Bounds x="262" y="292" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="230" y="332" width="100" height="27"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Trigger_di" bpmnElement="Gateway_Trigger" isMarkerVisible="true"><dc:Bounds x="365" y="185" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Register_di" bpmnElement="Task_Register"><dc:Bounds x="480" y="170" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Defer_di" bpmnElement="Task_Defer"><dc:Bounds x="630" y="260" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Deferred_di" bpmnElement="End_Deferred"><dc:Bounds x="802" y="282" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="770" y="322" width="100" height="40"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_TrainStop_di" bpmnElement="Task_TrainStop"><dc:Bounds x="1020" y="170" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_TrainStopped_di" bpmnElement="End_TrainStopped"><dc:Bounds x="1202" y="192" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="1160" y="232" width="120" height="40"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Collect_di" bpmnElement="Task_Collect"><dc:Bounds x="480" y="440" width="140" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Enough_di" bpmnElement="Gateway_Enough" isMarkerVisible="true"><dc:Bounds x="655" y="455" width="50" height="50"/><bpmndi:BPMNLabel><dc:Bounds x="615" y="515" width="130" height="20"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Split_di" bpmnElement="Task_Split"><dc:Bounds x="760" y="440" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Loop_di" bpmnElement="Gateway_Loop" isMarkerVisible="true"><dc:Bounds x="915" y="455" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Train_di" bpmnElement="Task_Train"><dc:Bounds x="1020" y="440" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Calibrate_di" bpmnElement="Task_Calibrate"><dc:Bounds x="1170" y="440" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Evaluate_di" bpmnElement="Task_Evaluate"><dc:Bounds x="1320" y="440" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Accept_di" bpmnElement="Gateway_Accept" isMarkerVisible="true"><dc:Bounds x="1495" y="455" width="50" height="50"/><bpmndi:BPMNLabel><dc:Bounds x="1435" y="505" width="80" height="40"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Compare_di" bpmnElement="Task_Compare"><dc:Bounds x="1620" y="440" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Better_di" bpmnElement="Gateway_Better" isMarkerVisible="true"><dc:Bounds x="1795" y="455" width="50" height="50"/><bpmndi:BPMNLabel><dc:Bounds x="1735" y="505" width="80" height="40"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Budget_di" bpmnElement="Gateway_Budget" isMarkerVisible="true"><dc:Bounds x="1495" y="655" width="50" height="50"/><bpmndi:BPMNLabel><dc:Bounds x="1550" y="700" width="110" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Adjust_di" bpmnElement="Task_Adjust"><dc:Bounds x="1170" y="640" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_KeepCurrent_di" bpmnElement="Task_KeepCurrent"><dc:Bounds x="1770" y="640" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_KeepCurrent_di" bpmnElement="End_KeepCurrent"><dc:Bounds x="1952" y="662" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="1920" y="702" width="100" height="27"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Approve_di" bpmnElement="Task_Approve"><dc:Bounds x="2070" y="920" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Approved_di" bpmnElement="Gateway_Approved" isMarkerVisible="true"><dc:Bounds x="2245" y="935" width="50" height="50"/><bpmndi:BPMNLabel><dc:Bounds x="2230" y="900" width="80" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Reject_di" bpmnElement="Task_Reject"><dc:Bounds x="2370" y="920" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Rejected_di" bpmnElement="End_Rejected"><dc:Bounds x="2552" y="942" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="2520" y="982" width="100" height="40"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Package_di" bpmnElement="Task_Package"><dc:Bounds x="2220" y="1110" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Shadow_di" bpmnElement="Task_Shadow"><dc:Bounds x="2370" y="1110" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Shadow_di" bpmnElement="Gateway_Shadow" isMarkerVisible="true"><dc:Bounds x="2545" y="1125" width="50" height="50"/><bpmndi:BPMNLabel><dc:Bounds x="2520" y="1090" width="80" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Switch_di" bpmnElement="Task_Switch"><dc:Bounds x="2670" y="1110" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Docs_di" bpmnElement="Task_Docs"><dc:Bounds x="2820" y="1110" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Deployed_di" bpmnElement="End_Deployed"><dc:Bounds x="3002" y="1132" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="2970" y="1172" width="100" height="27"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Rollback_di" bpmnElement="Task_Rollback"><dc:Bounds x="2520" y="1260" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_RolledBack_di" bpmnElement="End_RolledBack"><dc:Bounds x="2702" y="1282" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="2670" y="1322" width="100" height="40"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Boundary_TrainError_di" bpmnElement="Boundary_TrainError"><dc:Bounds x="1027" y="422" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="960" y="398" width="80" height="27"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Boundary_TrainTimeout_di" bpmnElement="Boundary_TrainTimeout"><dc:Bounds x="1077" y="422" width="36" height="36"/><bpmndi:BPMNLabel><dc:Bounds x="1115" y="405" width="130" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Data_Journal_di" bpmnElement="Data_Journal"><dc:Bounds x="372" y="455" width="36" height="50"/><bpmndi:BPMNLabel><dc:Bounds x="345" y="510" width="90" height="40"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Data_Package_di" bpmnElement="Data_Package"><dc:Bounds x="2152" y="1235" width="36" height="50"/><bpmndi:BPMNLabel><dc:Bounds x="2120" y="1290" width="100" height="27"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Store_Registry_di" bpmnElement="Store_Registry"><dc:Bounds x="2845" y="1265" width="50" height="50"/><bpmndi:BPMNLabel><dc:Bounds x="2825" y="1322" width="90" height="27"/></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annot_Triggers_di" bpmnElement="Annot_Triggers"><dc:Bounds x="610" y="75" width="380" height="125"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annot_Accept_di" bpmnElement="Annot_Accept"><dc:Bounds x="1290" y="75" width="470" height="135"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annot_Stop_di" bpmnElement="Annot_Stop"><dc:Bounds x="1310" y="735" width="440" height="105"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Annot_Shadow_di" bpmnElement="Annot_Shadow"><dc:Bounds x="2290" y="1235" width="210" height="110"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_T1_di" bpmnElement="Flow_T1"><di:waypoint x="298" y="110"/><di:waypoint x="390" y="110"/><di:waypoint x="390" y="185"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T2_di" bpmnElement="Flow_T2"><di:waypoint x="298" y="210"/><di:waypoint x="365" y="210"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T3_di" bpmnElement="Flow_T3"><di:waypoint x="298" y="310"/><di:waypoint x="390" y="310"/><di:waypoint x="390" y="235"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01_di" bpmnElement="Flow_01"><di:waypoint x="415" y="210"/><di:waypoint x="480" y="210"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02_di" bpmnElement="Flow_02"><di:waypoint x="530" y="250"/><di:waypoint x="550" y="250"/><di:waypoint x="550" y="440"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03_di" bpmnElement="Flow_03"><di:waypoint x="620" y="480"/><di:waypoint x="655" y="480"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DataNo_di" bpmnElement="Flow_DataNo"><di:waypoint x="680" y="455"/><di:waypoint x="680" y="340"/><bpmndi:BPMNLabel><dc:Bounds x="688" y="400" width="22" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04_di" bpmnElement="Flow_04"><di:waypoint x="730" y="300"/><di:waypoint x="802" y="300"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DataYes_di" bpmnElement="Flow_DataYes"><di:waypoint x="705" y="480"/><di:waypoint x="760" y="480"/><bpmndi:BPMNLabel><dc:Bounds x="712" y="460" width="15" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05_di" bpmnElement="Flow_05"><di:waypoint x="860" y="480"/><di:waypoint x="915" y="480"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06_di" bpmnElement="Flow_06"><di:waypoint x="965" y="480"/><di:waypoint x="1020" y="480"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07_di" bpmnElement="Flow_07"><di:waypoint x="1120" y="480"/><di:waypoint x="1170" y="480"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08_di" bpmnElement="Flow_08"><di:waypoint x="1270" y="480"/><di:waypoint x="1320" y="480"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09_di" bpmnElement="Flow_09"><di:waypoint x="1420" y="480"/><di:waypoint x="1495" y="480"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_AcceptYes_di" bpmnElement="Flow_AcceptYes"><di:waypoint x="1545" y="480"/><di:waypoint x="1620" y="480"/><bpmndi:BPMNLabel><dc:Bounds x="1553" y="460" width="15" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_AcceptNo_di" bpmnElement="Flow_AcceptNo"><di:waypoint x="1520" y="505"/><di:waypoint x="1520" y="655"/><bpmndi:BPMNLabel><dc:Bounds x="1528" y="560" width="22" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_BudgetNo_di" bpmnElement="Flow_BudgetNo"><di:waypoint x="1495" y="680"/><di:waypoint x="1270" y="680"/><bpmndi:BPMNLabel><dc:Bounds x="1450" y="660" width="22" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Loop_di" bpmnElement="Flow_Loop"><di:waypoint x="1170" y="680"/><di:waypoint x="940" y="680"/><di:waypoint x="940" y="505"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_BudgetYes_di" bpmnElement="Flow_BudgetYes"><di:waypoint x="1545" y="680"/><di:waypoint x="1770" y="680"/><bpmndi:BPMNLabel><dc:Bounds x="1555" y="660" width="15" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_BetterNo_di" bpmnElement="Flow_BetterNo"><di:waypoint x="1820" y="505"/><di:waypoint x="1820" y="640"/><bpmndi:BPMNLabel><dc:Bounds x="1828" y="560" width="22" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10"><di:waypoint x="1870" y="680"/><di:waypoint x="1952" y="680"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11"><di:waypoint x="1720" y="480"/><di:waypoint x="1795" y="480"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_BetterYes_di" bpmnElement="Flow_BetterYes"><di:waypoint x="1845" y="480"/><di:waypoint x="2120" y="480"/><di:waypoint x="2120" y="920"/><bpmndi:BPMNLabel><dc:Bounds x="1853" y="460" width="15" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_TrainErr_di" bpmnElement="Flow_TrainErr"><di:waypoint x="1045" y="422"/><di:waypoint x="1045" y="250"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_TrainTime_di" bpmnElement="Flow_TrainTime"><di:waypoint x="1095" y="422"/><di:waypoint x="1095" y="250"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12"><di:waypoint x="1120" y="210"/><di:waypoint x="1202" y="210"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13"><di:waypoint x="2170" y="960"/><di:waypoint x="2245" y="960"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ApprNo_di" bpmnElement="Flow_ApprNo"><di:waypoint x="2295" y="960"/><di:waypoint x="2370" y="960"/><bpmndi:BPMNLabel><dc:Bounds x="2300" y="940" width="22" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14"><di:waypoint x="2470" y="960"/><di:waypoint x="2552" y="960"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ApprYes_di" bpmnElement="Flow_ApprYes"><di:waypoint x="2270" y="985"/><di:waypoint x="2270" y="1110"/><bpmndi:BPMNLabel><dc:Bounds x="2278" y="1010" width="15" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15"><di:waypoint x="2320" y="1150"/><di:waypoint x="2370" y="1150"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16"><di:waypoint x="2470" y="1150"/><di:waypoint x="2545" y="1150"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ShadowYes_di" bpmnElement="Flow_ShadowYes"><di:waypoint x="2595" y="1150"/><di:waypoint x="2670" y="1150"/><bpmndi:BPMNLabel><dc:Bounds x="2603" y="1130" width="15" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ShadowNo_di" bpmnElement="Flow_ShadowNo"><di:waypoint x="2570" y="1175"/><di:waypoint x="2570" y="1260"/><bpmndi:BPMNLabel><dc:Bounds x="2578" y="1200" width="22" height="14"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17_di" bpmnElement="Flow_17"><di:waypoint x="2770" y="1150"/><di:waypoint x="2820" y="1150"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18_di" bpmnElement="Flow_18"><di:waypoint x="2920" y="1150"/><di:waypoint x="3002" y="1150"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19_di" bpmnElement="Flow_19"><di:waypoint x="2620" y="1300"/><di:waypoint x="2702" y="1300"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Assoc_Triggers_di" bpmnElement="Assoc_Triggers"><di:waypoint x="610" y="150"/><di:waypoint x="580" y="170"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Assoc_Accept_di" bpmnElement="Assoc_Accept"><di:waypoint x="1520" y="200"/><di:waypoint x="1520" y="455"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Assoc_Stop_di" bpmnElement="Assoc_Stop"><di:waypoint x="1520" y="735"/><di:waypoint x="1520" y="705"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Assoc_Shadow_di" bpmnElement="Assoc_Shadow"><di:waypoint x="2420" y="1235"/><di:waypoint x="2420" y="1190"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DA_Journal_di" bpmnElement="DA_Journal"><di:waypoint x="408" y="480"/><di:waypoint x="480" y="480"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DA_Package_di" bpmnElement="DA_Package"><di:waypoint x="2240" y="1190"/><di:waypoint x="2188" y="1250"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DA_Registry_di" bpmnElement="DA_Registry"><di:waypoint x="2750" y="1190"/><di:waypoint x="2850" y="1270"/></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
